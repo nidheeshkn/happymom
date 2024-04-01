@@ -16,9 +16,11 @@ async function subscribersHome(req, res) {
 
     console.log(req.session.session_id)
     // const subscribers_data = await Subscribers.findAll();
-    const subscriber_data = await Subscribers.findOne({ where: { subscribers_id: req.body.subscriber_id } });
+    const subscriber_data = await Subscribers.findOne({ where: { subscriber_id: req.body.subscriber_id } });
     console.log(subscriber_data);
-    res.send(subscriber_data)
+    const subordinate_data = await Subscribers.findAll({ where: { parent_id: subscriber_data.subscriber_id } });
+    console.log(subordinate_data);
+    res.json({subscriber_data,subordinate_data});
   }
 
-  module.exports={subscribersData}
+  module.exports={subscribersData,subscribersHome}

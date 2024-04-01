@@ -15,12 +15,12 @@ const WalletHistories = db.define('wallet_histories', {
     },
     new_subscriber_id:{
         type:DataTypes.INTEGER,
-        allowNull:false,
+       
        
     },
     added_by:{
         type:DataTypes.INTEGER,
-        allowNull:false,
+       
        
     },
     debit:{
@@ -40,13 +40,12 @@ const WalletHistories = db.define('wallet_histories', {
     },
     fee_payment_id:{
         type:DataTypes.STRING,
-        allowNull:false,
+       
        
     },
     transaction_id:{
         type:DataTypes.STRING,
-        allowNull:false,
-       
+              
     },
 });
 

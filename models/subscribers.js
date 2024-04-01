@@ -22,7 +22,7 @@ const Subscribers = db.define('subscribers', {
   
    },
     doj:{
-        type:DataTypes.STRING,
+        type:DataTypes.DATE,
         allowNull:false
     },
     adhaar_num:{
@@ -78,7 +78,7 @@ const Subscribers = db.define('subscribers', {
     ifsc_code:{
         type:DataTypes.STRING,
     },
-    house_name:{
+    active:{
         type:DataTypes.BOOLEAN,
     }
 });

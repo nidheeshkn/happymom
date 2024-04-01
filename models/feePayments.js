@@ -97,6 +97,10 @@ const FeePayments = db.define('fee_payments', {
     Settlement_UTR:{
         type:DataTypes.STRING,
        
+    },
+    used_fee:{
+        type:DataTypes.BOOLEAN,
+       defaultValue: false
     }
 })
 

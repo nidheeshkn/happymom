@@ -11,6 +11,7 @@ const Subscribers = require('./models/subscribers')
 const positionController =require("./controllers/positionController")
 const feesController =require("./controllers/feesController")
 const usersController =require("./controllers/usersController")
+const subscribersController =require("./controllers/subscribersController")
 
 
 const app = express();
@@ -86,7 +87,7 @@ app.get("/users/register", usersController.userRegister );
 
 app.post("/users/registration", usersController.userRegistration );
 
-app.get("/subscribers/home", usersController.usersData );
+app.post("/subscribers/home", subscribersController.subscribersHome );
 
 
 
