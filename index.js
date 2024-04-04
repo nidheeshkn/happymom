@@ -45,8 +45,9 @@ app.post("/login", async function (req, res) {
         req.session.isLoggedIn = true;
         req.session.session_id = result.dataValues.id
 
-        // res.redirect('/dashboard');
         return res.json({ status: "success", user: req.session.username, message: "succesfuly loged in" });
+        // res.redirect('/subscribers/home');
+
       }
 
     });
@@ -83,11 +84,11 @@ app.get("/fees", feesController.feesData );
 
 app.get("/users", usersController.usersData );
 
-app.get("/users/register", usersController.userRegister );
+app.get("/users/reference", usersController.userRegister );
 
 app.post("/users/registration", usersController.userRegistration );
 
-app.post("/subscribers/home", subscribersController.subscribersHome );
+app.post("/subscriber/home", subscribersController.subscribersHome );
 
 
 
