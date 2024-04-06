@@ -1,5 +1,5 @@
 
-const FeePayments = require('../models/feePayments');
+const FeePayments = require('../models/feePayment');
 
 
 

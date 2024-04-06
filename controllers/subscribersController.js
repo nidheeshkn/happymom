@@ -1,5 +1,5 @@
 
-const Subscribers = require('../models/subscribers');
+const Subscribers = require('../models/subscriber');
 const Users = require('../models/user');
 
 
@@ -15,7 +15,7 @@ async function subscribersData(req, res) {
 
 async function subscribersHome(req, res) {
 
-    console.log(req.session.session_id)
+    console.log(req.session.subscriber_id)
     // const subscribers_data = await Subscribers.findAll();
     // Getting user data for the person who send the registration link
     const user_data = await Users.findOne({ where: { id: req.body.subscriber_id } });

@@ -1,8 +1,8 @@
 
 const crypto = require('crypto');
 const Users = require('../models/user');
-const Subscribers = require('../models/subscribers');
-const FeePayments = require('../models/feePayments');
+const Subscribers = require('../models/subscriber');
+const FeePayments = require('../models/feePayment');
 const walletHistories = require('../models/wallet');
 
 

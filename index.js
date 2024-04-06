@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const cors = require("cors");
 // Option 3: Passing parameters separately (other dialects)
 const User = require("./models/user");
-const Subscribers = require('./models/subscribers')
+const Subscribers = require('./models/subscriber')
 // const auth = require("./auth/auth");
 const positionsController =require("./controllers/positionsController")
 const feesController =require("./controllers/feesController")
@@ -43,11 +43,14 @@ app.post("/login", async function (req, res) {
     bcrypt.compare(req.body.password, result.dataValues.password, function (err, hashResult) {
       if (hashResult) {
         req.session.isLoggedIn = true;
-        req.session.session_id = result.dataValues.id
+        req.session.subscriber_id = result.dataValues.id
 
-        return res.json({ status: "success", user: req.session.username, message: "succesfuly loged in" });
-        // res.redirect('/subscribers/home');
+        // return res.json({ status: "success", user: req.session.username, message: "succesfuly loged in" });
+        res.redirect('/subscribers/home');
 
+      }else{
+
+        return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
       }
 
     });
@@ -88,7 +91,7 @@ app.get("/users/reference", usersController.userRegister );
 
 app.post("/users/registration", usersController.userRegistration );
 
-app.post("/subscriber/home", subscribersController.subscribersHome );
+app.get("/subscriber/home", subscribersController.subscribersHome );
 
 
 
