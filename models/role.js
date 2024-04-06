@@ -20,4 +20,4 @@ const Role = db.define('roles', {
     
 });
 
-module.exports=User;
+module.exports=Role;

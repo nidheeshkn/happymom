@@ -9,7 +9,7 @@ const walletHistories = require('../models/wallet');
 
 async function userRegistration(req, res) {
 
-
+  console.log(req.body);
   try {
     // Getting user data for the person who send the registration link
     const user_data = await Users.findOne({ where: { link: req.body.refference_id } });

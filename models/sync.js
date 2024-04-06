@@ -2,15 +2,17 @@ const User=require("./user");
 const Subscribers = require('./subscribers')
 const FeePayments = require('./feePayments')
 const Position = require('./position')
+const Roles = require("./role")
 const UserRoles = require("./userroles")
 const WalletHistories = require("./wallet")
-// User.sync();
-User.sync({alter:true});
+User.sync();
+// User.sync({alter:true});
 // Subscribers.sync({alter:true});
 Subscribers.sync({});
 
 FeePayments.sync();
 Position.sync();
+Roles.sync();
 UserRoles.sync();
 WalletHistories.sync();
 // WalletHistories.sync({alter:true});

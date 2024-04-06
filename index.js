@@ -8,7 +8,7 @@ const cors = require("cors");
 const User = require("./models/user");
 const Subscribers = require('./models/subscribers')
 // const auth = require("./auth/auth");
-const positionController =require("./controllers/positionController")
+const positionsController =require("./controllers/positionsController")
 const feesController =require("./controllers/feesController")
 const usersController =require("./controllers/usersController")
 const subscribersController =require("./controllers/subscribersController")
@@ -70,15 +70,15 @@ app.get("/user/home", async function (req, res) {
 });
 
 
-app.get("/positions",positionController.positionsData );
+app.get("/positions",positionsController.positionsData );
 
 
-app.post("/positions/addPosition", positionController.addPosition);
+app.post("/positions/addPosition", positionsController.addPosition);
 
-app.post("/positions/updatePosition",positionController.updatePosition );
+app.post("/positions/updatePosition",positionsController.updatePosition );
 
 
-app.get("/positions",positionController.positionsData );
+app.get("/positions",positionsController.positionsData );
 
 app.get("/fees", feesController.feesData );
 
