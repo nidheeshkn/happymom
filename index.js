@@ -7,7 +7,7 @@ const cors = require("cors");
 // Option 3: Passing parameters separately (other dialects)
 const User = require("./models/user");
 const Subscribers = require('./models/subscriber')
-// const auth = require("./auth/auth");
+const auth = require("./auth/auth");
 const positionsController =require("./controllers/positionsController")
 const feesController =require("./controllers/feesController")
 const usersController =require("./controllers/usersController")
@@ -32,12 +32,13 @@ app.get("/", function (req, res) {
 });
 
 
-app.post("/login", async function (req, res) {
+app.post("/user/login", async function (req, res) {
   console.log("inside login");
-  console.log(req.body);
+  console.log(req.body.username);
+  console.log(req.body.password);
 
 
-  const result = await User.findOne({ where: { mobile_number: req.body.mobile_number } });
+  const result = await User.findOne({ where: { mobile_number: req.body.username } });
   console.log(result);
   if (result.dataValues) {
     bcrypt.compare(req.body.password, result.dataValues.password, function (err, hashResult) {
@@ -64,6 +65,7 @@ app.post("/login", async function (req, res) {
 
 
 // app.use(auth)
+
 app.get("/user/home", async function (req, res) {
   console.log(req.session.session_id)
   const SubscriberData = await Subscribers.findOne({ where: { subscriber_id: req.session.session_id } });
@@ -71,6 +73,8 @@ app.get("/user/home", async function (req, res) {
   console.log(SubscriberData);
   res.send(SubscriberData)
 });
+
+
 
 
 app.get("/positions",positionsController.positionsData );
@@ -88,10 +92,9 @@ app.get("/fees", feesController.feesData );
 app.get("/users", usersController.usersData );
 
 app.get("/users/reference", usersController.userRegister );
-
 app.post("/users/registration", usersController.userRegistration );
 
-app.get("/subscriber/home", subscribersController.subscribersHome );
+app.post("/subscriber/home", subscribersController.subscribersHome );
 
 
 
