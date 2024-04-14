@@ -96,6 +96,9 @@ app.post("/users/registration", usersController.userRegistration );
 
 app.post("/subscriber/home", subscribersController.subscribersHome );
 
+app.get("/fees/update", feesController.updateFees );
+
+
 
 
 app.listen(5000);
