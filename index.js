@@ -4,6 +4,9 @@ const session = require("express-session");
 const bcrypt = require('bcrypt');
 
 const cors = require("cors");
+const multer = require('multer');
+const xlsx = require('xlsx');
+
 // Option 3: Passing parameters separately (other dialects)
 const User = require("./models/user");
 const Subscribers = require('./models/subscriber')
