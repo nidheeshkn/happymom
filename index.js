@@ -35,7 +35,7 @@ app.get("/", function (req, res) {
 });
 
 
-app.post("/user/login", async function (req, res) {
+app.post("/api/user/login", async function (req, res) {
   console.log("inside login");
   console.log(req.body.username);
   console.log(req.body.password);
@@ -69,7 +69,7 @@ app.post("/user/login", async function (req, res) {
 
 // app.use(auth)
 
-app.get("/user/home", async function (req, res) {
+app.get("/api/user/home", async function (req, res) {
   console.log(req.session.session_id)
   const SubscriberData = await Subscribers.findOne({ where: { subscriber_id: req.session.session_id } });
   // const result = await User.findOne({ where: { mobile_number: req.body.mobile_number } });
@@ -80,26 +80,26 @@ app.get("/user/home", async function (req, res) {
 
 
 
-app.get("/positions",positionsController.positionsData );
+app.get("/api/positions",positionsController.positionsData );
 
 
-app.post("/positions/addPosition", positionsController.addPosition);
+app.post("/api/positions/addPosition", positionsController.addPosition);
 
-app.post("/positions/updatePosition",positionsController.updatePosition );
+app.post("/api/positions/updatePosition",positionsController.updatePosition );
 
 
-app.get("/positions",positionsController.positionsData );
+app.get("/api/positions",positionsController.positionsData );
 
-app.get("/fees", feesController.feesData );
+app.get("/api/fees", feesController.feesData );
 
-app.get("/users", usersController.usersData );
+app.get("/api/users", usersController.usersData );
 
-app.get("/users/reference", usersController.userRegister );
-app.post("/users/registration", usersController.userRegistration );
+app.get("/api/users/reference", usersController.userRegister );
+app.post("/api/users/registration", usersController.userRegistration );
 
-app.post("/subscriber/home", subscribersController.subscribersHome );
+app.post("/api/subscriber/home", subscribersController.subscribersHome );
 
-app.get("/fees/update", feesController.updateFees );
+app.get("/api/fees/update", feesController.updateFees );
 
 
 
