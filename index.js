@@ -69,6 +69,8 @@ app.get("/", function (req, res) {
 });
 
 
+
+//  Login function   
 app.post("/api/user/login", async function (req, res) {
   console.log("inside login");
   console.log(req.body);
@@ -117,6 +119,7 @@ app.get("/api/user/home", async function (req, res) {
 
 
 
+//     Call to positionsController      begins here ....................++++++++++++++++++++++++++++++++++
 
 app.get("/api/positions",positionsController.positionsData );
 
@@ -125,16 +128,29 @@ app.post("/api/positions/addPosition", positionsController.addPosition);
 
 app.post("/api/positions/updatePosition",positionsController.updatePosition );
 
-
 app.get("/api/positions",positionsController.positionsData );
 
+
+//     Call to positionsController      ends here ....................++++++++++++++++++++++++++++++++++
+
+
+
+
+
 app.get("/api/fees", feesController.feesData );
+
+//     Call to usersController      begins here ....................++++++++++++++++++++++++++++++++++
 
 app.get("/api/users", usersController.usersData );
 
 app.get("/api/users/reference", usersController.userRegister );
 
 app.post("/api/users/registration", usersController.userRegistration );
+
+app.post("/api/users/checkAvailability", usersController.userNameAvilability );
+
+//     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
+
 
 app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHome );
 
