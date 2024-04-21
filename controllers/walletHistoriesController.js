@@ -16,8 +16,10 @@ async function walletData(req, res) {
 
   async function myWallet(req, res) {
 
-    console.log(req.session.session_id);
-    const my_wallet_data = await wallet.findAll({ where: { subscriber_id: req.body.session_id } });
+    console.log(req.body);
+
+    // req.user.userId=req.body.subscriber_id;
+    const my_wallet_data = await wallet.findAll({ where: { subscriber_id:  req.body.subscriber_id} });
     console.log(my_wallet_data);
     res.send(my_wallet_data);
 

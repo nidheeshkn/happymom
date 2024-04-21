@@ -14,18 +14,34 @@ async function subscribersData(req, res) {
 
 
 async function subscribersHome(req, res) {
-
-    console.log(req.session.subscriber_id)
-    console.log(req.body.subscriber_id);
+    console.log("inside sub home")
+    console.log(req.user);
+    // console.log(req.body.subscriber_id);
     // const subscribers_data = await Subscribers.findAll();
     // Getting user data for the person who send the registration link
-    const user_data = await Users.findOne({ where: { id: req.body.subscriber_id } });
+    const user_data = await Users.findOne({ where: { id: req.user.userId } });
     console.log(user_data);
-    const subscriber_data = await Subscribers.findOne({ where: { subscriber_id: req.body.subscriber_id } });
-    console.log(subscriber_data);
+    const subscriber_data = await Subscribers.findOne({ where: { subscriber_id: req.user.userId } });
+    // console.log(subscriber_data);
     const subordinate_data = await Subscribers.findAll({ where: { parent_id: subscriber_data.subscriber_id } });
-    console.log(subordinate_data);
+    // console.log(subordinate_data);
     res.json({subscriber_data,subordinate_data,user_data});
   }
 
-  module.exports={subscribersData,subscribersHome}
+  async function viewSubscriber(req, res) {
+    console.log("inside view sub");
+    console.log(req.user);
+    console.log(req.body.subscriber_id);
+ 
+    const user_data = await Users.findOne({ where: { id: req.user.userId } });
+    console.log(user_data);
+    const my_data = await Subscribers.findOne({ where: { subscriber_id: req.user.userId } });
+    console.log(my_data.name);
+    const child_data = await Subscribers.findAll({ where: { parent_id: subscriber_data.subscriber_id } });
+
+
+    // console.log(subordinate_data);
+    res.json({subscriber_data,subordinate_data,user_data});
+  }
+
+  module.exports={subscribersData,subscribersHome,viewSubscriber}

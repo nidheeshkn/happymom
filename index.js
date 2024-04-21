@@ -4,6 +4,7 @@ const session = require("express-session");
 const bcrypt = require('bcrypt');
 
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const xlsx = require('xlsx');
 
@@ -14,7 +15,9 @@ const auth = require("./auth/auth");
 const positionsController =require("./controllers/positionsController")
 const feesController =require("./controllers/feesController")
 const usersController =require("./controllers/usersController")
-const subscribersController =require("./controllers/subscribersController")
+const subscribersController =require("./controllers/subscribersController");
+const WalletHistories = require('./models/wallet');
+const walletHistoriesController =require("./controllers/walletHistoriesController");
 
 
 const app = express();
@@ -29,6 +32,37 @@ app.use(session({
 }));
 
 
+// Function to generate JWT token
+function generateToken(id) {
+  const token = jwt.sign({
+      userId: id,
+      exp: Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60) // 10 days expiry
+  }, 'c23642fe54246a5c97e512e531da30f2211725825e390e8dcb63637b7af8bf81');
+  return token;
+}
+
+
+// Middleware to authenticate requests
+function authenticate(req, res, next) {
+
+  // if(req.url)
+  console.log(req.url);
+  const token = req.headers.authorization;
+
+  if (!token) {
+      return res.status(401).json({ message: 'Authorization token is missing' });
+  }
+
+  jwt.verify(token.split(' ')[1], 'c23642fe54246a5c97e512e531da30f2211725825e390e8dcb63637b7af8bf81', (err, decoded) => {
+      if (err) {
+          return res.status(403).json({ message: 'Invalid token' });
+      }
+      req.user = decoded;
+      next();
+  });
+}
+
+
 app.get("/", function (req, res) {
 
   res.send('Hai');
@@ -37,6 +71,7 @@ app.get("/", function (req, res) {
 
 app.post("/api/user/login", async function (req, res) {
   console.log("inside login");
+  console.log(req.body);
   console.log(req.body.username);
   console.log(req.body.password);
 
@@ -46,15 +81,18 @@ app.post("/api/user/login", async function (req, res) {
   if (result.dataValues) {
     bcrypt.compare(req.body.password, result.dataValues.password, function (err, hashResult) {
       if (hashResult) {
-        req.session.isLoggedIn = true;
-        req.session.subscriber_id = result.dataValues.id
+       
+    // Generate JWT token
+    const token = generateToken(result.dataValues.id);
 
-        // return res.json({ status: "success", user: req.session.username, message: "succesfuly loged in" });
-        res.redirect('/subscribers/home');
+    // Send token in response
+    // res.json({ token });
+        return res.json({ status: "success", token });
+        // res.redirect('/subscribers/home');
 
       }else{
 
-        return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
+        return res.status(401).json({ status: "failed", message: "mobile-number or password is incorrect" });
       }
 
     });
@@ -95,11 +133,15 @@ app.get("/api/fees", feesController.feesData );
 app.get("/api/users", usersController.usersData );
 
 app.get("/api/users/reference", usersController.userRegister );
+
 app.post("/api/users/registration", usersController.userRegistration );
 
-app.post("/api/subscriber/home", subscribersController.subscribersHome );
+app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHome );
 
-app.get("/api/fees/update", feesController.updateFees );
+app.post("/api/subscriber/view", authenticate,subscribersController.viewSubscriber );
+
+
+app.post("/api/walletDetails", walletHistoriesController.myWallet );
 
 
 
