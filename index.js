@@ -157,7 +157,7 @@ app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHo
 app.post("/api/subscriber/view", authenticate,subscribersController.viewSubscriber );
 
 
-app.post("/api/walletDetails", walletHistoriesController.myWallet );
+app.get("/api/walletDetails",authenticate, walletHistoriesController.myWallet );
 
 
 
