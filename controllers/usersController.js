@@ -9,16 +9,79 @@ const walletHistories = require('../models/wallet');
 
 
 
+async function initialUser(first_user) {
+
+  console.log(first_user);
+  try {
+    const randomString = generateRandomString(45); // Generate a random string of length 10
+    console.log(randomString);
+
+
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+      bcrypt.hash(first_user.password, salt, function (err, hash) {
+        // Store hash in your password DB.
+        if (err) {
+          console.log("Something went wrong... " );
+        } else {
+          (async function () {
+            let new_user = await Users.create({
+              id: 10001,
+
+              mobile_number: first_user.mobile_number,
+              password: hash,
+              email: first_user.email,
+              // link: req.body.refference_id,
+              link: randomString,
+
+            });
+
+            console.log("New user's auto-generated ID:", new_user.id);
+            console.log(new_user);
+
+            let today = new Date().toLocaleDateString()
+
+            console.log(today)
+            let new_subscriber = await Subscribers.create({
+              subscriber_id: new_user.id,
+              parent_id: new_user.id,
+              doj: today,
+              wallet_balance: 0,
+              active: true,
+
+            });
+            console.log(new_subscriber);
+          })();
+        }
+
+      });
+    }
+    );
+
+
+
+
+
+  }
+
+  catch (e) {
+
+
+    console.log(e); return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
+
+  }
+
+}
+
 async function userNameAvilability(req, res) {
 
   console.log(req.body.mobile_number)
   // const users_data = await Users.findAll();
   const users_data = await Users.findOne({ where: { mobile_number: req.body.mobile_number } });
   console.log(users_data);
-  if(users_data){
-    res.send({availability:false,message:"This mobile number already registered in our system, please login"})
-  }else{
-    res.send({availability:true})
+  if (users_data) {
+    res.send({ availability: false, message: "This mobile number already registered in our system, please login" })
+  } else {
+    res.send({ availability: true })
 
   }
 }
@@ -42,26 +105,26 @@ async function userRegistration(req, res) {
       const randomString = generateRandomString(45); // Generate a random string of length 10
       console.log(randomString);
 
-      bcrypt.genSalt(saltRounds, function(err, salt) {
-        bcrypt.hash(req.body.password, salt, function(err, hash) {
-            // Store hash in your password DB.
-            if(err){
-              return res.status(500).json({status:"failed",message:"Something went wrong... "})
-            }else{
-              (async function(){
-                let new_user = await Users.create({
+      bcrypt.genSalt(saltRounds, function (err, salt) {
+        bcrypt.hash(req.body.password, salt, function (err, hash) {
+          // Store hash in your password DB.
+          if (err) {
+            return res.status(500).json({ status: "failed", message: "Something went wrong... " })
+          } else {
+            (async function () {
+              let new_user = await Users.create({
                 mobile_number: req.body.mobile_number,
                 password: hash,
                 email: req.body.email,
                 // link: req.body.refference_id,
                 link: randomString,
-        
+
               });
 
               console.log("New user's auto-generated ID:", new_user.id);
 
               let today = new Date().toLocaleDateString()
-        
+
               console.log(today)
               let new_subscriber = await Subscribers.create({
                 subscriber_id: new_user.id,
@@ -69,12 +132,12 @@ async function userRegistration(req, res) {
                 doj: today,
                 wallet_balance: 0,
                 active: false,
-        
+
               });
               const fee_data = await FeePayments.findOne({ where: { Mobile_Number: 91 + new_user.mobile_number } });
               console.log(fee_data);
               if (typeof fee_data.Razorpay_TransactionId != "undefined") {
-        
+
                 await Subscribers.update({
                   name: fee_data.Student_Name,
                   active: true,
@@ -84,15 +147,15 @@ async function userRegistration(req, res) {
                       subscriber_id: new_user.id
                     }
                   });
-        
+
                 console.log(new_subscriber, "++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                 const subscriber_new = await Subscribers.findOne({ where: { subscriber_id: new_user.id } });
                 let my_boss = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
-        
-        
+
+
                 console.log(subscriber_new, "------------------------------");
                 console.log(my_boss, "------------------------------");
-        
+
                 // parent_subscriber.sync(); 
                 let incentive_percentage = 15;
                 let incentive = fee_data.Actual_Amount * incentive_percentage / 100;
@@ -109,7 +172,7 @@ async function userRegistration(req, res) {
                       subscriber_id: my_boss.subscriber_id
                     }
                   });
-        
+
                 let wallet_entry = await walletHistories.create({
                   subscriber_id: my_boss.subscriber_id,
                   new_subscriber_id: subscriber_new.subscriber_id,
@@ -117,23 +180,23 @@ async function userRegistration(req, res) {
                   credit: Number(incentive),
                   description: description,
                   fee_payment_id: fee_data.Razorpay_TransactionId,
-        
+
                 });
-        
-        
-        
+
+
+
                 incentive_percentage = 5;
                 let i = 4;
                 let j = 0;
-        
+
                 while (my_boss.subscriber_id != my_boss.parent_id) {
-        
-        
+
+
                   my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
-        
+
                   if (i > 0) {
                     let incentive = fee_data.Actual_Amount * incentive_percentage / 100;
-        
+
                     var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
                     console.log(total_amount);
                     const parent_subscriber = await Subscribers.update({
@@ -144,7 +207,7 @@ async function userRegistration(req, res) {
                           subscriber_id: my_boss.subscriber_id
                         }
                       });
-        
+
                     let wallet_entry = await walletHistories.create({
                       subscriber_id: my_boss.subscriber_id,
                       new_subscriber_id: subscriber_new.subscriber_id,
@@ -152,9 +215,9 @@ async function userRegistration(req, res) {
                       credit: Number(incentive),
                       description: description,
                       fee_payment_id: fee_data.Razorpay_TransactionId,
-        
+
                     });
-        
+
                     last_paid_subscriber_id = my_boss.subscriber_id;
                     i--;
                   } else {
@@ -163,23 +226,23 @@ async function userRegistration(req, res) {
                   console.log("value of subscriber ID=", my_boss.subscriber_id);
                   console.log("value of parent ID=", my_boss.parent_id);
                 }
-        
+
                 if (j > 0) {
-        
+
                   let rest_of_money = fee_data.Actual_Amount * incentive_percentage / 100;
-        
+
                   incentive = rest_of_money / j;
-        
+
                   my_boss = await Subscribers.findOne({ where: { subscriber_id: last_paid_subscriber_id } });
-        
+
                   while (my_boss.subscriber_id != my_boss.parent_id) {
-        
-        
+
+
                     my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
-        
-        
-        
-        
+
+
+
+
                     var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
                     console.log(total_amount);
                     const parent_subscriber = await Subscribers.update({
@@ -190,7 +253,7 @@ async function userRegistration(req, res) {
                           subscriber_id: my_boss.subscriber_id
                         }
                       });
-        
+
                     let wallet_entry = await walletHistories.create({
                       subscriber_id: my_boss.subscriber_id,
                       new_subscriber_id: subscriber_new.subscriber_id,
@@ -198,28 +261,28 @@ async function userRegistration(req, res) {
                       credit: Number(incentive),
                       description: description,
                       fee_payment_id: fee_data.Razorpay_TransactionId,
-        
+
                     });
-        
-        
+
+
                   }
-        
+
                   console.log("value of subscriber ID=", my_boss.subscriber_id);
                   console.log("value of parent ID=", my_boss.parent_id);
                 }
-        
+
               }
-        
-        
-        
-        
+
+
+
+
               res.send(new_subscriber);
             })();
-            }
+          }
 
         });
-    });
-      
+      });
+
 
 
     }
@@ -256,8 +319,8 @@ async function userRegister(req, res) {
   const user_data = await Users.findOne({ where: { link: req.query.referee } });
   console.log(user_data);
   const parent_subscriber = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
-      console.log(parent_subscriber);
-  res.json({user_data,parent_subscriber});
+  console.log(parent_subscriber);
+  res.json({ user_data, parent_subscriber });
   // res.send("hai")
 
 }
@@ -283,4 +346,4 @@ function generateRandomString(length) {
 
 
 
-module.exports = { usersData, userRegister, userRegistration,userNameAvilability }
+module.exports = { usersData, userRegister, userRegistration, userNameAvilability, initialUser }
