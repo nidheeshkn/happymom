@@ -22,11 +22,14 @@ async function myWallet(req, res) {
 
   // req.user.userId=req.body.subscriber_id;
   if (req.user.userId) {
+    const user_data = await Users.findOne({ where: { id: req.user.userId } });
+    console.log(user_data);
+    user_data.password=null;
     const my_wallet_data = await wallet.findAll({ where: { subscriber_id: req.user.userId } });
     console.log(my_wallet_data);
     const subscriber_data = await Subscribers.findOne({ where: { subscriber_id: req.user.userId } });
     // my_wallet_data.date=
-    res.json({subscriber_data,my_wallet_data});
+    res.json({subscriber_data,my_wallet_data,user_data});
   } else {
 
     res.json({ message: "invalid User" });

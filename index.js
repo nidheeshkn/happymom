@@ -18,6 +18,8 @@ const usersController =require("./controllers/usersController")
 const subscribersController =require("./controllers/subscribersController");
 const WalletHistories = require('./models/wallet');
 const walletHistoriesController =require("./controllers/walletHistoriesController");
+const coursesController =require("./controllers/coursesController");
+
 
 
 const app = express();
@@ -159,6 +161,7 @@ app.post("/api/subscriber/view", authenticate,subscribersController.viewSubscrib
 
 app.get("/api/walletDetails",authenticate, walletHistoriesController.myWallet );
 
+app.get("/api/courses",authenticate, coursesController.courseList );
 
 
 
