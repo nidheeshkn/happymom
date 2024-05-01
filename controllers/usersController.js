@@ -160,7 +160,7 @@ async function userRegistration(req, res) {
                 let incentive_percentage = 15;
                 let incentive = fee_data.Actual_Amount * incentive_percentage / 100;
                 console.log(incentive);
-                let description = parent_name + " added a new person " + subscriber_new.name;
+                let description = parent_name + " added " + subscriber_new.name;
                 console.log(description);
                 var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
                 console.log(total_amount);
