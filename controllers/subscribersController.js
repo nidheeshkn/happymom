@@ -21,6 +21,7 @@ async function subscribersHome(req, res) {
     // Getting user data for the person who send the registration link
     const user_data = await Users.findOne({ where: { id: req.user.userId } });
     console.log(user_data);
+    user_data.password=null;
     const subscriber_data = await Subscribers.findOne({ where: { subscriber_id: req.user.userId } });
     // console.log(subscriber_data);
     const subordinate_data = await Subscribers.findAll({ where: { parent_id: subscriber_data.subscriber_id } });
