@@ -156,9 +156,12 @@ app.post("/api/users/checkAvailability", usersController.userNameAvilability );
 
 app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHome );
 
-app.post("/api/subscriber/view", authenticate,subscribersController.viewSubscriber );
+app.get("/api/subscriber/view", authenticate,subscribersController.viewSubscriber );
 
-app.post("/api/subscriber/profile", authenticate,subscribersController.myProfile );
+app.get("/api/subscriber/profile", authenticate,subscribersController.myProfile );
+
+app.post("/api/subscriber/update_me", authenticate,subscribersController.updateMe );
+
 
 
 app.get("/api/walletDetails",authenticate, walletHistoriesController.myWallet );

@@ -3,6 +3,32 @@ const Subscribers = require('../models/subscriber');
 const Users = require('../models/user');
 
 
+
+
+async function updateMe(req, res) {
+  console.log("profile");
+  console.log(req.user);
+
+  const subscriber = await Subscribers.update({
+
+
+    wallet_balance: total_amount,
+  },
+    {
+      where: {
+       subscriber_id: req.user.userId 
+      }
+    });
+
+  const my_data = await Subscribers.findOne({ where: { subscriber_id: req.user.userId } });
+  console.log(my_data.name);
+
+
+  // console.log(subordinate_data);
+  res.json({my_data});
+}
+
+
 async function subscribersData(req, res) {
 
   console.log(req.session.session_id)
@@ -59,4 +85,4 @@ async function subscribersHome(req, res) {
   }
   
 
-  module.exports={subscribersData,subscribersHome,viewSubscriber,myProfile}
+  module.exports={subscribersData,subscribersHome,viewSubscriber,myProfile,updateMe}
