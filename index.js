@@ -158,6 +158,8 @@ app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHo
 
 app.post("/api/subscriber/view", authenticate,subscribersController.viewSubscriber );
 
+app.post("/api/subscriber/profile", authenticate,subscribersController.myProfile );
+
 
 app.get("/api/walletDetails",authenticate, walletHistoriesController.myWallet );
 
