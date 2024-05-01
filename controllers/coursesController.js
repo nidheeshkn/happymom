@@ -1,6 +1,7 @@
 
 const wallet = require('../models/wallet')
 const Subscribers = require('../models/subscriber');
+const Users = require('../models/user');
 
 
 
