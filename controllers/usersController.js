@@ -7,7 +7,7 @@ const Subscribers = require('../models/subscriber');
 const FeePayments = require('../models/feePayment');
 const walletHistories = require('../models/wallet');
 
-const feesController =require("../controllers/feesController")
+const feesController = require("../controllers/feesController")
 
 
 
@@ -23,7 +23,7 @@ async function initialUser(first_user) {
       bcrypt.hash(first_user.password, salt, function (err, hash) {
         // Store hash in your password DB.
         if (err) {
-          console.log("Something went wrong... " );
+          console.log("Something went wrong... ");
         } else {
           (async function () {
             let new_user = await Users.create({
@@ -48,7 +48,7 @@ async function initialUser(first_user) {
               parent_id: new_user.id,
               name: "P M Shaji",
               doj: today,
-              gross_wallet:0,
+              gross_wallet: 0,
               wallet_balance: 0,
               active: true,
 
@@ -154,9 +154,9 @@ async function userRegistration(req, res) {
                     }
                   });
 
-                  console.log("just b4 function call");
-                  console.log(new_subscriber);
-                  console.log(fee_data);
+                console.log("just b4 function call");
+                console.log(new_subscriber);
+                console.log(fee_data);
                 feesController.distributeBonus(new_subscriber, fee_data);
 
               }

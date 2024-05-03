@@ -12,13 +12,13 @@ const xlsx = require('xlsx');
 
 const User = require("./models/user");
 const Subscribers = require('./models/subscriber')
-const positionsController =require("./controllers/positionsController")
-const feesController =require("./controllers/feesController")
-const usersController =require("./controllers/usersController")
-const subscribersController =require("./controllers/subscribersController");
+const positionsController = require("./controllers/positionsController")
+const feesController = require("./controllers/feesController")
+const usersController = require("./controllers/usersController")
+const subscribersController = require("./controllers/subscribersController");
 const WalletHistories = require('./models/wallet');
-const walletHistoriesController =require("./controllers/walletHistoriesController");
-const coursesController =require("./controllers/coursesController");
+const walletHistoriesController = require("./controllers/walletHistoriesController");
+const coursesController = require("./controllers/coursesController");
 
 
 
@@ -37,8 +37,8 @@ app.use(session({
 // Function to generate JWT token
 function generateToken(id) {
   const token = jwt.sign({
-      userId: id,
-      exp: Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60) // 10 days expiry
+    userId: id,
+    exp: Math.floor(Date.now() / 1000) + (10 * 24 * 60 * 60) // 10 days expiry
   }, 'c23642fe54246a5c97e512e531da30f2211725825e390e8dcb63637b7af8bf81');
   return token;
 }
@@ -52,15 +52,15 @@ function authenticate(req, res, next) {
   const token = req.headers.authorization;
 
   if (!token) {
-      return res.status(401).json({ message: 'Authorization token is missing' });
+    return res.status(401).json({ message: 'Authorization token is missing' });
   }
 
   jwt.verify(token.split(' ')[1], 'c23642fe54246a5c97e512e531da30f2211725825e390e8dcb63637b7af8bf81', (err, decoded) => {
-      if (err) {
-          return res.status(403).json({ message: 'Invalid token' });
-      }
-      req.user = decoded;
-      next();
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+    req.user = decoded;
+    next();
   });
 }
 
@@ -85,16 +85,16 @@ app.post("/api/user/login", async function (req, res) {
   if (result.dataValues) {
     bcrypt.compare(req.body.password, result.dataValues.password, function (err, hashResult) {
       if (hashResult) {
-       
-    // Generate JWT token
-    const token = generateToken(result.dataValues.id);
 
-    // Send token in response
-    // res.json({ token });
+        // Generate JWT token
+        const token = generateToken(result.dataValues.id);
+
+        // Send token in response
+        // res.json({ token });
         return res.json({ status: "success", token });
         // res.redirect('/subscribers/home');
 
-      }else{
+      } else {
 
         return res.status(401).json({ status: "failed", message: "mobile-number or password is incorrect" });
       }
@@ -123,13 +123,13 @@ app.get("/api/user/home", async function (req, res) {
 
 //     Call to usersController      begins here ....................++++++++++++++++++++++++++++++++++
 
-app.get("/api/users", usersController.usersData );
+app.get("/api/users", usersController.usersData);
 
-app.get("/api/users/reference", usersController.userRegister );
+app.get("/api/users/reference", usersController.userRegister);
 
-app.post("/api/users/registration", usersController.userRegistration );
+app.post("/api/users/registration", usersController.userRegistration);
 
-app.post("/api/users/checkAvailability", usersController.userNameAvilability );
+app.post("/api/users/checkAvailability", usersController.userNameAvilability);
 
 //     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
 
@@ -138,14 +138,14 @@ app.post("/api/users/checkAvailability", usersController.userNameAvilability );
 
 //     Call to positionsController      begins here ....................++++++++++++++++++++++++++++++++++
 
-app.get("/api/positions",authenticate,positionsController.positionsData );
+app.get("/api/positions", authenticate, positionsController.positionsData);
 
 
-app.post("/api/positions/addPosition",authenticate, positionsController.addPosition);
+app.post("/api/positions/addPosition", authenticate, positionsController.addPosition);
 
-app.post("/api/positions/updatePosition",authenticate,positionsController.updatePosition );
+app.post("/api/positions/updatePosition", authenticate, positionsController.updatePosition);
 
-app.get("/api/positions",authenticate,positionsController.positionsData );
+app.get("/api/positions", authenticate, positionsController.positionsData);
 
 
 //     Call to positionsController      ends here ....................++++++++++++++++++++++++++++++++++
@@ -154,23 +154,23 @@ app.get("/api/positions",authenticate,positionsController.positionsData );
 
 
 
-app.get("/api/fees", feesController.feesData );
+app.get("/api/fees", feesController.feesData);
 
 
 
-app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHome );
+app.get("/api/subscriber/home", authenticate, subscribersController.subscribersHome);
 
-app.get("/api/subscriber/view", authenticate,subscribersController.viewSubscriber );
+app.get("/api/subscriber/view", authenticate, subscribersController.viewSubscriber);
 
-app.get("/api/subscriber/profile", authenticate,subscribersController.myProfile );
+app.get("/api/subscriber/profile", authenticate, subscribersController.myProfile);
 
-app.post("/api/subscriber/update_me", authenticate,subscribersController.updateMe );
+app.post("/api/subscriber/update_me", authenticate, subscribersController.updateMe);
 
 
 
-app.get("/api/walletDetails",authenticate, walletHistoriesController.myWallet );
+app.get("/api/walletDetails", authenticate, walletHistoriesController.myWallet);
 
-app.get("/api/courses",authenticate, coursesController.courseList );
+app.get("/api/courses", authenticate, coursesController.courseList);
 
 
 

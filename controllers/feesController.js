@@ -9,7 +9,7 @@ const walletHistories = require('../models/wallet');
 
 function calculateIncreasingPercentages(numLevels) {
   if (numLevels <= 0) {
-      throw new Error("Number of levels must be positive.");
+    throw new Error("Number of levels must be positive.");
   }
 
   // Calculate total weight for normalization
@@ -23,7 +23,7 @@ function calculateIncreasingPercentages(numLevels) {
   // Calculate percentages for each level
   const percentages = [];
   for (let level = 0; level < numLevels; level++) {
-      percentages.push(weight(level) / totalWeight);
+    percentages.push(weight(level) / totalWeight);
   }
 
   return percentages;
@@ -46,17 +46,17 @@ async function distributeBonus(new_subscriber, fee_data) {
   const parent_id = parent.subscriber_id;
 
 
-  
+
 
   let description = subscriber_new.name + " joined " + fee_data.Course_Name;
   console.log(description);
 
   let my_boss = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
   console.log(my_boss, "------------------------------");
-  const total_incentive_percentage=40;
-  let incentive_allotted=0;
+  const total_incentive_percentage = 40;
+  let incentive_allotted = 0;
   let incentive_percentage = 15;
-  let last_paid_incentive_percentage=0;
+  let last_paid_incentive_percentage = 0;
   let i = 3;
   let j = 0;
 
@@ -82,7 +82,7 @@ async function distributeBonus(new_subscriber, fee_data) {
           }
         });
 
-       
+
       let wallet_entry = await walletHistories.create({
         subscriber_id: my_boss.subscriber_id,
         new_subscriber_id: subscriber_new.subscriber_id,
@@ -92,10 +92,10 @@ async function distributeBonus(new_subscriber, fee_data) {
         fee_payment_id: fee_data.Razorpay_TransactionId,
 
       });
-      incentive_allotted=incentive_allotted+incentive_percentage;
-      
-      incentive_percentage=incentive_percentage-5;
-      last_paid_incentive=incentive;
+      incentive_allotted = incentive_allotted + incentive_percentage;
+
+      incentive_percentage = incentive_percentage - 5;
+      last_paid_incentive = incentive;
       last_paid_subscriber_id = my_boss.subscriber_id;
       i--;
     } else {
@@ -105,29 +105,29 @@ async function distributeBonus(new_subscriber, fee_data) {
     console.log("value of parent ID=", my_boss.parent_id);
   }
 
-  incentive_percentage=total_incentive_percentage-incentive_allotted;
+  incentive_percentage = total_incentive_percentage - incentive_allotted;
 
   let rest_of_money = fee_data.Actual_Amount * incentive_percentage / 100;
-  
+
 
 
   if (j > 0) {
-    percentages=calculateIncreasingPercentages(j+1);
+    percentages = calculateIncreasingPercentages(j + 1);
 
     console.log(percentages);
-    
+
     const amounts = [];
-    percentages.forEach((i, ind) => { 
-        if(ind>0)
+    percentages.forEach((i, ind) => {
+      if (ind > 0)
         // console.log(i);
-    
-        amounts.push(rest_of_money*i);
-    
+
+        amounts.push(rest_of_money * i);
+
     });
-    
+
     console.log(amounts);
 
-    i=0;    
+    i = 0;
     my_boss = await Subscribers.findOne({ where: { subscriber_id: last_paid_subscriber_id } });
 
     while (my_boss.subscriber_id != my_boss.parent_id) {
@@ -136,8 +136,8 @@ async function distributeBonus(new_subscriber, fee_data) {
 
       var incentive = amounts[i];
       console.log(incentive);
-      if (incentive > last_paid_incentive){
-        incentive=last_paid_incentive;
+      if (incentive > last_paid_incentive) {
+        incentive = last_paid_incentive;
       }
       var gross_amount = Number(my_boss.gross_wallet) + Number(incentive);
       var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
@@ -160,7 +160,7 @@ async function distributeBonus(new_subscriber, fee_data) {
         fee_payment_id: fee_data.Razorpay_TransactionId,
 
       });
-      i=i+1;
+      i = i + 1;
 
     }
 
@@ -226,6 +226,28 @@ async function addData(row) {
     });
     FeePayments.sync();
     console.log("new fees auto-generated ID:", fee_data.Razorpay_TransactionId);
+    // Getting user data for the person who send the registration link
+    const user_data = await Users.findOne({ where: { mobile_number: fee_data.Mobile_Number } });
+    console.log(user_data);
+    // Read respective subscriber data(This is the details of parent)
+    const new_subscriber = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
+    console.log(new_subscriber);
+
+    await Subscribers.update({
+      name: fee_data.Student_Name,
+      active: true,
+    },
+      {
+        where: {
+          subscriber_id: new_subscriber.subscriber_id
+        }
+      });
+
+    console.log("just b4 function call");
+    console.log(new_subscriber);
+    console.log(fee_data);
+    feesController.distributeBonus(new_subscriber, fee_data);
+
 
   } else {
     console.log("record Avilable");
