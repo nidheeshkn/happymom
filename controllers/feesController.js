@@ -4,6 +4,8 @@ const FeePayments = require('../models/feePayment');
 const Subscribers = require('../models/subscriber');
 const walletHistories = require('../models/wallet');
 
+const feesController = require("../controllers/feesController")
+
 
 
 
