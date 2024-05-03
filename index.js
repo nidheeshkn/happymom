@@ -9,6 +9,7 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 
 // Option 3: Passing parameters separately (other dialects)
+
 const User = require("./models/user");
 const Subscribers = require('./models/subscriber')
 const auth = require("./auth/auth");
@@ -121,26 +122,6 @@ app.get("/api/user/home", async function (req, res) {
 
 
 
-//     Call to positionsController      begins here ....................++++++++++++++++++++++++++++++++++
-
-app.get("/api/positions",positionsController.positionsData );
-
-
-app.post("/api/positions/addPosition", positionsController.addPosition);
-
-app.post("/api/positions/updatePosition",positionsController.updatePosition );
-
-app.get("/api/positions",positionsController.positionsData );
-
-
-//     Call to positionsController      ends here ....................++++++++++++++++++++++++++++++++++
-
-
-
-
-
-app.get("/api/fees", feesController.feesData );
-
 //     Call to usersController      begins here ....................++++++++++++++++++++++++++++++++++
 
 app.get("/api/users", usersController.usersData );
@@ -152,6 +133,30 @@ app.post("/api/users/registration", usersController.userRegistration );
 app.post("/api/users/checkAvailability", usersController.userNameAvilability );
 
 //     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
+
+
+
+
+//     Call to positionsController      begins here ....................++++++++++++++++++++++++++++++++++
+
+app.get("/api/positions",authenticate,positionsController.positionsData );
+
+
+app.post("/api/positions/addPosition",authenticate, positionsController.addPosition);
+
+app.post("/api/positions/updatePosition",authenticate,positionsController.updatePosition );
+
+app.get("/api/positions",authenticate,positionsController.positionsData );
+
+
+//     Call to positionsController      ends here ....................++++++++++++++++++++++++++++++++++
+
+
+
+
+
+app.get("/api/fees", feesController.feesData );
+
 
 
 app.get("/api/subscriber/home", authenticate,subscribersController.subscribersHome );

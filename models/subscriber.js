@@ -13,8 +13,7 @@ const Subscribers = db.define('subscribers', {
        
     },
     name:{
-        type:DataTypes.STRING(),
-      
+        type:DataTypes.STRING(),     
        
     },
    dob:{
@@ -24,6 +23,9 @@ const Subscribers = db.define('subscribers', {
     doj:{
         type:DataTypes.DATE,
         allowNull:false
+    },
+    validity_date:{
+        type:DataTypes.DATE,
     },
     adhaar_num:{
         type:DataTypes.STRING,
@@ -61,6 +63,9 @@ const Subscribers = db.define('subscribers', {
         type:DataTypes.STRING,
     },
     position_id : {
+        type:DataTypes.STRING,
+    },
+    gross_wallet:{
         type:DataTypes.STRING,
     },
     wallet_balance:{

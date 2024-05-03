@@ -18,6 +18,11 @@ const Position = db.define('positions', {
         allowNull:false,
         unique:true
     },
+    gross_wallet:{
+        type:DataTypes.INTEGER,
+        allowNull:true,
+       
+    },
     total_subscribers:{
         type:DataTypes.INTEGER,
         allowNull:true,

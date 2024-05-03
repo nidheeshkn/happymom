@@ -25,7 +25,7 @@ function calculateIncreasingPercentages(numLevels) {
 }
 
 // Example usage
-const numberOfLevels = 101;
+const numberOfLevels = 4;
 const percentages = calculateIncreasingPercentages(numberOfLevels);
 
 console.log(percentages);
@@ -34,7 +34,7 @@ percentages.forEach((i, ind) => {
     if(ind>0)
     // console.log(i);
 
-    amounts.push(60*i);
+    amounts.push(90*i);
 
 });
 
