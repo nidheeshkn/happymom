@@ -12,7 +12,6 @@ const xlsx = require('xlsx');
 
 const User = require("./models/user");
 const Subscribers = require('./models/subscriber')
-const auth = require("./auth/auth");
 const positionsController =require("./controllers/positionsController")
 const feesController =require("./controllers/feesController")
 const usersController =require("./controllers/usersController")

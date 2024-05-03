@@ -1,16 +1,10 @@
-
-// const fs = require('node:fs');
-// const csvParser = require('csv-parser');
-// const FeePayments = require('../models/feePayment');
 const usersController =require("../controllers/usersController");
 const subscribersController =require("../controllers/subscribersController");
 const positionsController =require("../controllers/positionsController");
 
 
-// let first_user;
 first_user = {'mobile_number':9400056815,'password':'qwerty','email':'pmshaji@gmail.com'};
-// first_user.mobile_number=9400056815;
-// first_user.password='quwerty';
+
 
 const result=usersController.initialUser(first_user);
 

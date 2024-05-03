@@ -1,8 +1,177 @@
 const fs = require('node:fs');
 const csvParser = require('csv-parser');
 const FeePayments = require('../models/feePayment');
+const Subscribers = require('../models/subscriber');
+const walletHistories = require('../models/wallet');
 
 
+
+
+function calculateIncreasingPercentages(numLevels) {
+  if (numLevels <= 0) {
+      throw new Error("Number of levels must be positive.");
+  }
+
+  // Calculate total weight for normalization
+  const totalWeight = (numLevels * (numLevels + 1)) / 2;
+  console.log(totalWeight);
+
+  // Function to calculate weight for each level (lower level, higher weight)
+  const weight = level => numLevels - level + 1;
+  console.log(weight);
+
+  // Calculate percentages for each level
+  const percentages = [];
+  for (let level = 0; level < numLevels; level++) {
+      percentages.push(weight(level) / totalWeight);
+  }
+
+  return percentages;
+}
+
+
+
+async function distributeBonus(new_subscriber, fee_data) {
+
+
+  console.log("inside distributeBonus");
+  console.log(new_subscriber);
+  console.log(fee_data, fee_data.Actual_Amount, fee_data.Course_Name);
+
+  const subscriber_new = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
+
+  console.log(new_subscriber, "++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  let parent = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.parent_id } });
+  const parent_name = parent.name;
+  const parent_id = parent.subscriber_id;
+
+
+  
+
+  let description = subscriber_new.name + " joined " + fee_data.Course_Name;
+  console.log(description);
+
+  let my_boss = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
+  console.log(my_boss, "------------------------------");
+  const total_incentive_percentage=40;
+  let incentive_allotted=0;
+  let incentive_percentage = 15;
+  let last_paid_incentive_percentage=0;
+  let i = 3;
+  let j = 0;
+
+  while (my_boss.subscriber_id != my_boss.parent_id) {
+
+
+    my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
+
+    if (i > 0) {
+      let incentive = fee_data.Actual_Amount * incentive_percentage / 100;
+      var gross_amount = Number(my_boss.gross_wallet) + Number(incentive);
+
+      var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
+      console.log(total_amount);
+      const parent_subscriber = await Subscribers.update({
+        wallet_balance: total_amount,
+        gross_wallet: gross_amount,
+
+      },
+        {
+          where: {
+            subscriber_id: my_boss.subscriber_id
+          }
+        });
+
+       
+      let wallet_entry = await walletHistories.create({
+        subscriber_id: my_boss.subscriber_id,
+        new_subscriber_id: subscriber_new.subscriber_id,
+        added_by: parent_id,
+        credit: Number(incentive),
+        description: description,
+        fee_payment_id: fee_data.Razorpay_TransactionId,
+
+      });
+      incentive_allotted=incentive_allotted+incentive_percentage;
+      
+      incentive_percentage=incentive_percentage-5;
+      last_paid_incentive=incentive;
+      last_paid_subscriber_id = my_boss.subscriber_id;
+      i--;
+    } else {
+      j++;
+    }
+    console.log("value of subscriber ID=", my_boss.subscriber_id);
+    console.log("value of parent ID=", my_boss.parent_id);
+  }
+
+  incentive_percentage=total_incentive_percentage-incentive_allotted;
+
+  let rest_of_money = fee_data.Actual_Amount * incentive_percentage / 100;
+  
+
+
+  if (j > 0) {
+    percentages=calculateIncreasingPercentages(j+1);
+
+    console.log(percentages);
+    
+    const amounts = [];
+    percentages.forEach((i, ind) => { 
+        if(ind>0)
+        // console.log(i);
+    
+        amounts.push(rest_of_money*i);
+    
+    });
+    
+    console.log(amounts);
+
+    i=0;    
+    my_boss = await Subscribers.findOne({ where: { subscriber_id: last_paid_subscriber_id } });
+
+    while (my_boss.subscriber_id != my_boss.parent_id) {
+
+      my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
+
+      var incentive = amounts[i];
+      console.log(incentive);
+      if (incentive > last_paid_incentive){
+        incentive=last_paid_incentive;
+      }
+      var gross_amount = Number(my_boss.gross_wallet) + Number(incentive);
+      var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
+      const parent_subscriber = await Subscribers.update({
+        wallet_balance: total_amount,
+        gross_wallet: gross_amount,
+      },
+        {
+          where: {
+            subscriber_id: my_boss.subscriber_id
+          }
+        });
+
+      let wallet_entry = await walletHistories.create({
+        subscriber_id: my_boss.subscriber_id,
+        new_subscriber_id: subscriber_new.subscriber_id,
+        added_by: parent_id,
+        credit: Number(incentive),
+        description: description,
+        fee_payment_id: fee_data.Razorpay_TransactionId,
+
+      });
+      i=i+1;
+
+    }
+
+    console.log("value of subscriber ID=", my_boss.subscriber_id);
+    console.log("value of parent ID=", my_boss.parent_id);
+  }
+
+
+
+
+}
 
 async function feesData(req, res) {
 
@@ -58,7 +227,7 @@ async function addData(row) {
     FeePayments.sync();
     console.log("new fees auto-generated ID:", fee_data.Razorpay_TransactionId);
 
-  }else{
+  } else {
     console.log("record Avilable");
   }
 }
@@ -156,4 +325,4 @@ async function updateFees(req, res) {
 
 // }
 
-module.exports = { feesData, updateFees, addData }
+module.exports = { feesData, updateFees, addData, distributeBonus }

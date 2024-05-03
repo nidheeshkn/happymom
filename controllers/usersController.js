@@ -7,6 +7,8 @@ const Subscribers = require('../models/subscriber');
 const FeePayments = require('../models/feePayment');
 const walletHistories = require('../models/wallet');
 
+const feesController =require("../controllers/feesController")
+
 
 
 async function initialUser(first_user) {
@@ -44,7 +46,9 @@ async function initialUser(first_user) {
             let new_subscriber = await Subscribers.create({
               subscriber_id: new_user.id,
               parent_id: new_user.id,
+              name: "P M Shaji",
               doj: today,
+              gross_wallet:0,
               wallet_balance: 0,
               active: true,
 
@@ -130,6 +134,7 @@ async function userRegistration(req, res) {
                 subscriber_id: new_user.id,
                 parent_id: parent_id,
                 doj: today,
+                gross_wallet: 0,
                 wallet_balance: 0,
                 active: false,
 
@@ -138,138 +143,21 @@ async function userRegistration(req, res) {
               console.log(fee_data);
               if (typeof fee_data.Razorpay_TransactionId != "undefined") {
 
+
                 await Subscribers.update({
                   name: fee_data.Student_Name,
                   active: true,
                 },
                   {
                     where: {
-                      subscriber_id: new_user.id
+                      subscriber_id: new_subscriber.subscriber_id
                     }
                   });
 
-                console.log(new_subscriber, "++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                const subscriber_new = await Subscribers.findOne({ where: { subscriber_id: new_user.id } });
-                let my_boss = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
-
-
-                console.log(subscriber_new, "------------------------------");
-                console.log(my_boss, "------------------------------");
-
-                // parent_subscriber.sync(); 
-                let incentive_percentage = 15;
-                let incentive = fee_data.Actual_Amount * incentive_percentage / 100;
-                console.log(incentive);
-                let description = parent_name + " added " + subscriber_new.name;
-                console.log(description);
-                var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
-                console.log(total_amount);
-                const parent_subscriber = await Subscribers.update({
-                  wallet_balance: total_amount,
-                },
-                  {
-                    where: {
-                      subscriber_id: my_boss.subscriber_id
-                    }
-                  });
-
-                let wallet_entry = await walletHistories.create({
-                  subscriber_id: my_boss.subscriber_id,
-                  new_subscriber_id: subscriber_new.subscriber_id,
-                  added_by: parent_id,
-                  credit: Number(incentive),
-                  description: description,
-                  fee_payment_id: fee_data.Razorpay_TransactionId,
-
-                });
-
-
-
-                incentive_percentage = 5;
-                let i = 4;
-                let j = 0;
-
-                while (my_boss.subscriber_id != my_boss.parent_id) {
-
-
-                  my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
-
-                  if (i > 0) {
-                    let incentive = fee_data.Actual_Amount * incentive_percentage / 100;
-
-                    var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
-                    console.log(total_amount);
-                    const parent_subscriber = await Subscribers.update({
-                      wallet_balance: total_amount,
-                    },
-                      {
-                        where: {
-                          subscriber_id: my_boss.subscriber_id
-                        }
-                      });
-
-                    let wallet_entry = await walletHistories.create({
-                      subscriber_id: my_boss.subscriber_id,
-                      new_subscriber_id: subscriber_new.subscriber_id,
-                      added_by: parent_id,
-                      credit: Number(incentive),
-                      description: description,
-                      fee_payment_id: fee_data.Razorpay_TransactionId,
-
-                    });
-
-                    last_paid_subscriber_id = my_boss.subscriber_id;
-                    i--;
-                  } else {
-                    j++;
-                  }
-                  console.log("value of subscriber ID=", my_boss.subscriber_id);
-                  console.log("value of parent ID=", my_boss.parent_id);
-                }
-
-                if (j > 0) {
-
-                  let rest_of_money = fee_data.Actual_Amount * incentive_percentage / 100;
-
-                  incentive = rest_of_money / j;
-
-                  my_boss = await Subscribers.findOne({ where: { subscriber_id: last_paid_subscriber_id } });
-
-                  while (my_boss.subscriber_id != my_boss.parent_id) {
-
-
-                    my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
-
-
-
-
-                    var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
-                    console.log(total_amount);
-                    const parent_subscriber = await Subscribers.update({
-                      wallet_balance: total_amount,
-                    },
-                      {
-                        where: {
-                          subscriber_id: my_boss.subscriber_id
-                        }
-                      });
-
-                    let wallet_entry = await walletHistories.create({
-                      subscriber_id: my_boss.subscriber_id,
-                      new_subscriber_id: subscriber_new.subscriber_id,
-                      added_by: parent_id,
-                      credit: Number(incentive),
-                      description: description,
-                      fee_payment_id: fee_data.Razorpay_TransactionId,
-
-                    });
-
-
-                  }
-
-                  console.log("value of subscriber ID=", my_boss.subscriber_id);
-                  console.log("value of parent ID=", my_boss.parent_id);
-                }
+                  console.log("just b4 function call");
+                  console.log(new_subscriber);
+                  console.log(fee_data);
+                feesController.distributeBonus(new_subscriber, fee_data);
 
               }
 
