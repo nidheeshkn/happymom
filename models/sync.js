@@ -16,5 +16,5 @@ Position.sync();
 
 Roles.sync();
 UserRoles.sync();
-WalletHistories.sync();
-// WalletHistories.sync({alter:true});
+// WalletHistories.sync();
+WalletHistories.sync({alter:true});

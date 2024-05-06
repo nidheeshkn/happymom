@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const csvParser = require('csv-parser');
 // const FeePayments = require('../models/feePayment');
-const feesController =require("../controllers/feesController")
+const feesController = require("../controllers/feesController")
 
 
 
@@ -11,20 +11,25 @@ const express = require('express');
 const xlsx = require('xlsx');
 // const mysql = require('mysql'); // Or your database driver
 
-const workbook = xlsx.readFile("Transactions.xlsx");
-const sheetName = workbook.SheetNames[0];
-const worksheet = workbook.Sheets[sheetName];
-const data = xlsx.utils.sheet_to_json(worksheet);
 
-for (const row of data) {
-// console.log(row);
+    const workbook = xlsx.readFile("Transactions.xlsx");
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(worksheet);
 
+    updateFees();
+    async function updateFees(){
+        for (const row of data) {
+            // console.log(row);
+    
+    
+            const result = await feesController.addData(row);
+            await sleep(3000);
+        }
+    
+    }
 
-const result=feesController.addData(row);
-
-
-}
-
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 // // Route for handling file upload and data import
 // app.post('/upload', upload.single('excelFile'), async (req, res) => {
 //   try {

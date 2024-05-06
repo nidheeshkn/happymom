@@ -24,12 +24,12 @@ const WalletHistories = db.define('wallet_histories', {
        
     },
     debit:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.STRING,
         allowNull:true,
        
     },
     credit:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.STRING,
         allowNull:true,
        
     },

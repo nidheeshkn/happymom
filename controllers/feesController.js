@@ -3,8 +3,9 @@ const csvParser = require('csv-parser');
 const FeePayments = require('../models/feePayment');
 const Subscribers = require('../models/subscriber');
 const walletHistories = require('../models/wallet');
+const Users = require('../models/user');
 
-const feesController = require("../controllers/feesController")
+
 
 
 
@@ -16,11 +17,11 @@ function calculateIncreasingPercentages(numLevels) {
 
   // Calculate total weight for normalization
   const totalWeight = (numLevels * (numLevels + 1)) / 2;
-  console.log(totalWeight);
+  // console.log(totalWeight);
 
   // Function to calculate weight for each level (lower level, higher weight)
   const weight = level => numLevels - level + 1;
-  console.log(weight);
+  // console.log(weight);
 
   // Calculate percentages for each level
   const percentages = [];
@@ -37,12 +38,12 @@ async function distributeBonus(new_subscriber, fee_data) {
 
 
   console.log("inside distributeBonus");
-  console.log(new_subscriber);
-  console.log(fee_data, fee_data.Actual_Amount, fee_data.Course_Name);
+  // console.log(new_subscriber);
+  // console.log(fee_data);
 
   const subscriber_new = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
 
-  console.log(new_subscriber, "++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  // console.log(new_subscriber);
   let parent = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.parent_id } });
   const parent_name = parent.name;
   const parent_id = parent.subscriber_id;
@@ -54,13 +55,16 @@ async function distributeBonus(new_subscriber, fee_data) {
   console.log(description);
 
   let my_boss = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
-  console.log(my_boss, "------------------------------");
+  // console.log(my_boss);
   const total_incentive_percentage = 40;
   let incentive_allotted = 0;
   let incentive_percentage = 15;
   let last_paid_incentive_percentage = 0;
+  let last_paid_subscriber_id;
+  let incentive=0;
   let i = 3;
   let j = 0;
+  let k = 0;
 
   while (my_boss.subscriber_id != my_boss.parent_id) {
 
@@ -103,9 +107,11 @@ async function distributeBonus(new_subscriber, fee_data) {
     } else {
       j++;
     }
-    console.log("value of subscriber ID=", my_boss.subscriber_id);
-    console.log("value of parent ID=", my_boss.parent_id);
+
   }
+  console.log("value of i=", i);
+  console.log("value of J=", j);
+
 
   incentive_percentage = total_incentive_percentage - incentive_allotted;
 
@@ -114,9 +120,9 @@ async function distributeBonus(new_subscriber, fee_data) {
 
 
   if (j > 0) {
-    percentages = calculateIncreasingPercentages(j + 1);
+    percentages = calculateIncreasingPercentages(j + 2);
 
-    console.log(percentages);
+    // console.log(percentages);
 
     const amounts = [];
     percentages.forEach((i, ind) => {
@@ -127,22 +133,42 @@ async function distributeBonus(new_subscriber, fee_data) {
 
     });
 
-    console.log(amounts);
 
-    i = 0;
+
+    
     my_boss = await Subscribers.findOne({ where: { subscriber_id: last_paid_subscriber_id } });
 
+
+
+
     while (my_boss.subscriber_id != my_boss.parent_id) {
+      console.log("-------------------------------------------------");
+      console.log(amounts);
+      console.log("value of k=", k);
+      console.log("value of J=", j);
+      console.log("Last paid subscriber ID=", last_paid_subscriber_id);
+      console.log("My boss subscriber ID=", my_boss.subscriber_id);
+      console.log("myBoss parent ID=", my_boss.parent_id);
+      // console.log(fee_data);
+      console.log("-------------------------------------------------");
 
       my_boss = await Subscribers.findOne({ where: { subscriber_id: my_boss.parent_id } });
+      incentive = Number(amounts[k]);
+      if (Number.isNaN(incentive)) {
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-      var incentive = amounts[i];
+      }
       console.log(incentive);
       if (incentive > last_paid_incentive) {
         incentive = last_paid_incentive;
       }
+      incentive = incentive.toFixed(4);
       var gross_amount = Number(my_boss.gross_wallet) + Number(incentive);
       var total_amount = Number(my_boss.wallet_balance) + Number(incentive);
+
+      console.log("--------------------------------------------------------------------------------------------------------");
+      console.log(gross_amount);
+      console.log(total_amount);
       const parent_subscriber = await Subscribers.update({
         wallet_balance: total_amount,
         gross_wallet: gross_amount,
@@ -162,9 +188,10 @@ async function distributeBonus(new_subscriber, fee_data) {
         fee_payment_id: fee_data.Razorpay_TransactionId,
 
       });
-      i = i + 1;
+      k = k + 1;
 
     }
+
 
     console.log("value of subscriber ID=", my_boss.subscriber_id);
     console.log("value of parent ID=", my_boss.parent_id);
@@ -228,27 +255,36 @@ async function addData(row) {
     });
     FeePayments.sync();
     console.log("new fees auto-generated ID:", fee_data.Razorpay_TransactionId);
+
+    let mobile_text = String(fee_data.Mobile_Number);
+    let mobileNumber = mobile_text.substring(2);
     // Getting user data for the person who send the registration link
-    const user_data = await Users.findOne({ where: { mobile_number: fee_data.Mobile_Number } });
+    const user_data = await Users.findOne({ where: { mobile_number: mobileNumber } });
     console.log(user_data);
-    // Read respective subscriber data(This is the details of parent)
-    const new_subscriber = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
-    console.log(new_subscriber);
 
-    await Subscribers.update({
-      name: fee_data.Student_Name,
-      active: true,
-    },
-      {
-        where: {
-          subscriber_id: new_subscriber.subscriber_id
-        }
-      });
+    if (user_data !== null && user_data.id) {
+      // Read respective subscriber data(This is the details of parent)
+      const new_subscriber = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
+      console.log(new_subscriber);
 
-    console.log("just b4 function call");
-    console.log(new_subscriber);
-    console.log(fee_data);
-    feesController.distributeBonus(new_subscriber, fee_data);
+      await Subscribers.update({
+        name: fee_data.Student_Name,
+        validity_date:fee_data.Course_expiry_date,
+        active: true,
+      },
+        {
+          where: {
+            subscriber_id: new_subscriber.subscriber_id
+          }
+        });
+
+      console.log("just b4 function call");
+      // console.log(new_subscriber);
+      // console.log(fee_data);
+      distributeBonus(new_subscriber, fee_data);
+
+
+    }
 
 
   } else {
