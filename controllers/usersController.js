@@ -76,18 +76,32 @@ async function initialUser(first_user) {
 
 }
 
-async function userNameAvilability(req, res) {
+async function userNameAvailability(req, res) {
 
   console.log(req.body.mobile_number)
-  // const users_data = await Users.findAll();
-  const users_data = await Users.findOne({ where: { mobile_number: req.body.mobile_number } });
-  console.log(users_data);
-  if (users_data) {
-    res.send({ availability: false, message: "This mobile number already registered in our system, please login" })
-  } else {
-    res.send({ availability: true })
-
+  if(req.body.mobile_number){
+    const users_data = await Users.findOne({ where: { mobile_number: req.body.mobile_number } });
+    console.log(users_data);
+    if (users_data) {
+      res.send({ availability: "false", message: "This mobile number already exist" });
+    } else {
+      res.send({ availability: "true" })
+  
+    }
+  
   }
+  else{
+    const users_data = await Users.findOne({ where: { email: req.body.email } });
+    console.log(users_data);
+    if (users_data) {
+      res.send({ availability: "false", message: "This email already exist" });
+    } else {
+      res.send({ availability: "true" })
+  
+    }
+  }
+  // const users_data = await Users.findAll();
+
 }
 
 async function userRegistration(req, res) {
@@ -234,4 +248,4 @@ function generateRandomString(length) {
 
 
 
-module.exports = { usersData, userRegister, userRegistration, userNameAvilability, initialUser }
+module.exports = { usersData, userRegister, userRegistration, userNameAvailability, initialUser }

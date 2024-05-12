@@ -129,7 +129,7 @@ app.get("/api/users/reference", usersController.userRegister);
 
 app.post("/api/users/registration", usersController.userRegistration);
 
-app.post("/api/users/checkAvailability", usersController.userNameAvilability);
+app.post("/api/users/checkAvailability", usersController.userNameAvailability);
 
 //     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
 
