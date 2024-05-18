@@ -19,7 +19,7 @@ const subscribersController = require("./controllers/subscribersController");
 const WalletHistories = require('./models/wallet');
 const walletHistoriesController = require("./controllers/walletHistoriesController");
 const coursesController = require("./controllers/coursesController");
-
+const passwordResetController= require("./controllers/passwordResetController")
 
 
 const app = express();
@@ -130,6 +130,15 @@ app.get("/api/users/reference", usersController.userRegister);
 app.post("/api/users/registration", usersController.userRegistration);
 
 app.post("/api/users/checkAvailability", usersController.userNameAvailability);
+
+app.post("/api/users/passwordresetrequest", passwordResetController.addRequest);
+
+app.post("/api/users/readrequest", passwordResetController.getRequest);
+
+
+app.post("/api/users/passwordreset", passwordResetController.doReset);
+
+
 
 //     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
 

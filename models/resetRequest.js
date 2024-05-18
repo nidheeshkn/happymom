@@ -27,6 +27,11 @@ const passwordRequests = db.define('password_requests', {
         allowNull:true,
        
     },
+    reset_date:{
+        type:DataTypes.DATE,
+        allowNull:true,
+       
+    },
     expiry_date:{
         type:DataTypes.DATE,
         allowNull:true,

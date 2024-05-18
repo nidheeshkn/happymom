@@ -33,5 +33,5 @@ UserRoles.sync();
 WalletHistories.sync();
 // WalletHistories.sync({alter:true});
 
-passwordRequests.sync();
-// passwordRequests.sync({alter:true});
+// passwordRequests.sync();
+passwordRequests.sync({alter:true});
