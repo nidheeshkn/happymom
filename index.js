@@ -79,32 +79,37 @@ app.post("/api/user/login", async function (req, res) {
   console.log(req.body.username);
   console.log(req.body.password);
 
-
-  const result = await User.findOne({ where: { mobile_number: req.body.username } });
-  console.log(result);
-  if (result.dataValues) {
-    bcrypt.compare(req.body.password, result.dataValues.password, function (err, hashResult) {
-      if (hashResult) {
-
-        // Generate JWT token
-        const token = generateToken(result.dataValues.id);
-
-        // Send token in response
-        // res.json({ token });
-        return res.json({ status: "success", token });
-        // res.redirect('/subscribers/home');
-
-      } else {
-
-        return res.status(401).json({ status: "failed", message: "mobile-number or password is incorrect" });
-      }
-
-    });
-
-  } else {
+  try {
+    
+    const result = await User.findOne({ where: { mobile_number: req.body.username } });
+    console.log(result);
+    if (result.dataValues) {
+      bcrypt.compare(req.body.password, result.dataValues.password, function (err, hashResult) {
+        if (hashResult) {
+  
+          // Generate JWT token
+          const token = generateToken(result.dataValues.id);
+  
+          // Send token in response
+          // res.json({ token });
+          return res.json({ status: "success", token });
+          // res.redirect('/subscribers/home');
+  
+        } else {
+  
+          return res.status(401).json({ status: "failed", message: "mobile-number or password is incorrect" });
+        }
+  
+      });
+  
+    } else {
+      return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
+  
+    }
+  } catch (error) {
     return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
-
   }
+
 });
 
 
