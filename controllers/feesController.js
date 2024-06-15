@@ -53,7 +53,7 @@ async function distributeBonus(new_subscriber, fee_data) {
 
 
   // let description = subscriber_new.name + " joined " + fee_data.Course_Name;
-  let description = parent_name + "=>" + subscriber_new.name;
+  let description = parent_name + "\n" + subscriber_new.name;
   console.log(description);
 
   let my_boss = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
