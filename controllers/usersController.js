@@ -155,6 +155,11 @@ async function userRegistration(req, res) {
               });
               const fee_data = await FeePayments.findOne({ where: { Mobile_Number: 91 + new_user.mobile_number } });
               console.log(fee_data);
+              
+
+
+              
+              if(fee_data){
               if (typeof fee_data.Razorpay_TransactionId != "undefined") {
 
 
@@ -174,11 +179,13 @@ async function userRegistration(req, res) {
                 feesController.distributeBonus(new_subscriber, fee_data);
 
               }
+            }
 
 
 
 
-              res.send(new_subscriber);
+              return res.json({data:new_subscriber});
+              
             })();
           }
 
