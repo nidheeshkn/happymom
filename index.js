@@ -46,10 +46,15 @@ function generateToken(id) {
 
 // Middleware to authenticate requests
 function authenticate(req, res, next) {
+  console.log("inside Auth middle");
 
   // if(req.url)
   console.log(req.url);
+  console.log(req.headers);
+
   const token = req.headers.authorization;
+
+  console.log(token);
 
   if (!token) {
     return res.status(401).json({ message: 'Authorization token is missing' });
@@ -59,6 +64,7 @@ function authenticate(req, res, next) {
     if (err) {
       return res.status(403).json({ message: 'Invalid token' });
     }
+    console.log(decoded);
     req.user = decoded;
     next();
   });
@@ -128,7 +134,8 @@ app.get("/api/user/home", async function (req, res) {
 
 //     Call to usersController      begins here ....................++++++++++++++++++++++++++++++++++
 
-app.get("/api/users", usersController.usersData);
+app.get("/api/users",  usersController.usersData);
+
 
 app.get("/api/users/reference", usersController.userRegister);
 
@@ -147,6 +154,7 @@ app.post("/api/users/passwordreset", passwordResetController.doReset);
 
 //     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
 
+app.get("/api/user", authenticate, usersController.userData);
 
 
 

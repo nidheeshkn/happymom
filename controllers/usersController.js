@@ -214,15 +214,28 @@ async function usersData(req, res) {
 }
 
 
+async function userData(req, res) {
+
+  // console.log(req.session.session_id)
+  console.log(req.user)
+  // const users_data = await Users.findAll();
+  const user_data = await Users.findOne({ where: { id: req.user.userId } });
+  console.log(user_data,"user data new api");
+  res.send(user_data)
+}
+
 async function userRegister(req, res) {
 
   console.log(req.query);
   // const users_data = await Users.findAll();
   const user_data = await Users.findOne({ where: { link: req.query.referee } });
   console.log(user_data);
-  const parent_subscriber = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
-  console.log(parent_subscriber);
-  res.json({ user_data, parent_subscriber });
+  if(user_data){
+    const parent_subscriber = await Subscribers.findOne({ where: { subscriber_id: user_data.id } });
+    console.log(parent_subscriber);
+    res.json({ user_data, parent_subscriber });
+  }
+ 
   // res.send("hai")
 
 }
@@ -248,4 +261,4 @@ function generateRandomString(length) {
 
 
 
-module.exports = { usersData, userRegister, userRegistration, userNameAvailability, initialUser }
+module.exports = { usersData, userData, userRegister, userRegistration, userNameAvailability, initialUser }

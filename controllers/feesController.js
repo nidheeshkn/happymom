@@ -43,6 +43,7 @@ async function distributeBonus(new_subscriber, fee_data) {
 
   const subscriber_new = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
 
+
   // console.log(new_subscriber);
   let parent = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.parent_id } });
   const parent_name = parent.name;
@@ -51,7 +52,8 @@ async function distributeBonus(new_subscriber, fee_data) {
 
 
 
-  let description = subscriber_new.name + " joined " + fee_data.Course_Name;
+  // let description = subscriber_new.name + " joined " + fee_data.Course_Name;
+  let description = parent_name + "=>" + subscriber_new.name;
   console.log(description);
 
   let my_boss = await Subscribers.findOne({ where: { subscriber_id: new_subscriber.subscriber_id } });
