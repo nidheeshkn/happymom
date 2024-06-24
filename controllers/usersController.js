@@ -7,7 +7,10 @@ const Subscribers = require('../models/subscriber');
 const FeePayments = require('../models/feePayment');
 const walletHistories = require('../models/wallet');
 
-const feesController = require("../controllers/feesController")
+const feesController = require("../controllers/feesController");
+const { Op } = require('sequelize');
+
+
 
 
 
