@@ -155,7 +155,7 @@ async function addRequest(req, res) {
           from: process.env.EMAIL_USER,
           to: req.body.email,
           subject: 'Password Reset Request From Happymom.com.in',
-          text: `
+          html: `
 <html>          
 Hi,
 
