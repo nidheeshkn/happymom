@@ -140,7 +140,7 @@ async function addRequest(req, res) {
 
         })
 
-      const resetURL=`https://192.168.78.251:3000/resetpassword/updatepassword?reset_link=${randomString}`
+      const resetURL=`${process.env.BASE_URL}/resetpassword/updatepassword?reset_link=${randomString}`
 
         // Create a transporter
         let transporter = nodemailer.createTransport({
