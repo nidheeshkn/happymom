@@ -158,18 +158,20 @@ async function addRequest(req, res) {
           html: `
 <html>          
 Hi,
+<br>
+<br>
 
-We received a request to reset the password for your happymom account. 
-If this was you, please click the link below to choose a new password:
+We received a request to reset the password for your happymom account.<br> 
+If this was you, please click the link below to choose a new password:<br><br>
 
-<a href=${resetURL}>reset my password</a>
+<a href=${resetURL}>reset my password</a><br><br>
 
 
-This password reset link will expire in 24 hours for your security. 
-If you did not request this password reset, you can safely ignore this email.
+This password reset link will expire in 24 hours for your security. <br>
+If you did not request this password reset, you can safely ignore this email.<br>
 
-If you have any questions or need help, please contact our support team at happymompms@gmail.com or +91 9400056815.
-Thanks,
+If you have any questions or need help, please contact our support team at happymompms@gmail.com or +91 9400056815.<br>
+Thanks,<br>
 Happymom
 </html>
 
