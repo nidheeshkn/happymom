@@ -153,7 +153,11 @@ async function userRegistration(req, res) {
                 active: false,
 
               });
-              const fee_data = await FeePayments.findOne({ where: { Mobile_Number: 91 + new_user.mobile_number } });
+              const fee_data = await FeePayments.findOne({ 
+                where: {
+                  //  Mobile_Number: 91 + new_user.mobile_number, used_fee:false 
+                   [Op.and]: [{ Mobile_Number: 91 + new_user.mobile_number}, { used_fee:false  }],
+                  } });
               console.log(fee_data);
               
 

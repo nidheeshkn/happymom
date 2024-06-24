@@ -82,7 +82,6 @@ async function distributeBonus(new_subscriber, fee_data) {
       const parent_subscriber = await Subscribers.update({
         wallet_balance: total_amount,
         gross_wallet: gross_amount,
-
       },
         {
           where: {
@@ -199,7 +198,14 @@ async function distributeBonus(new_subscriber, fee_data) {
     console.log("value of parent ID=", my_boss.parent_id);
   }
 
-
+  const feeDataUpdate = await FeePayments.update({
+    used_fee: true,
+  },
+    {
+      where: {
+        Razorpay_TransactionId: fee_data.Razorpay_TransactionId
+      }
+    });
 
 
 }
@@ -253,6 +259,7 @@ async function addData(row) {
       Purchase_Invoice: fixedData.Purchase_Invoice,
       Payment_Detail: fixedData.Payment_Detail,
       Settlement_UTR: fixedData.Settlement_UTR,
+      used_fee:false 
 
     });
     FeePayments.sync();
