@@ -143,6 +143,9 @@ app.post("/api/users/registration", usersController.userRegistration);
 
 app.post("/api/users/checkAvailability", usersController.userNameAvailability);
 
+
+app.post("/api/users/resetmypassword",authenticate, passwordResetController.resetMyPassword);
+
 app.post("/api/users/passwordresetrequest", passwordResetController.addRequest);
 
 app.post("/api/users/readrequest", passwordResetController.getRequest);

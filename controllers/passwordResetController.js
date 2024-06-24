@@ -8,8 +8,84 @@ const bcrypt = require('bcrypt');
 const Users = require("../models/user")
 const PwdReset = require('../models/resetRequest');
 const { where } = require('sequelize');
-
+require('dotenv').config();
 const saltRounds = 10;
+
+
+async function resetMyPassword(req, res) {
+
+  // This function is to reset password of a user without sending email
+  console.log("inside resetMyPassword");
+  console.log(req.body);
+
+
+  try {
+
+    const user_data = await Users.findOne({ where: { id: req.user.userId } });
+
+
+    console.log(user_data);
+    if (user_data.dataValues) {
+      bcrypt.compare(req.body.curr, user_data.dataValues.password, function (err, hashResult) {
+        if (hashResult) {
+
+          try {
+            bcrypt.genSalt(saltRounds, function (err, salt) {
+              bcrypt.hash(req.body.newpassword, salt, function (err, hash) {
+                // Store hash in your password DB.
+                if (err) {
+                  return res.status(500).json({ status: "failed", message: "Something went wrong... " })
+                } else {
+                  (async function () {
+                    let new_user = await Users.update({
+
+                      password: hash,
+
+                    }
+
+                      , {
+                        where: {
+                          id: user_data.id
+                        }
+                      }
+
+
+                    );
+                    return res.json({ status: "success", message: "password saved successfuly" })
+
+
+                  })();
+                }
+
+              });
+            });
+
+
+
+          } catch (error) {
+            return res.status(500).json({ status: "Internal server error" })
+          }
+
+        } else {
+
+          return res.status(401).json({ status: "failed", message: "current password is incorrect" });
+        }
+
+      });
+
+    } else {
+      return res.status(401).json({ status: "failed", message: "Unauthorised password reset request" });
+
+    }
+  } catch (error) {
+
+    console.log(error);
+    return res.status(500).json({ status: "failed", message: "Unexpected Server error, couldn't reset password..." });
+  }
+
+
+}
+
 
 
 async function requestData(req, res) {
@@ -21,19 +97,26 @@ async function requestData(req, res) {
 }
 
 
+
+
+
 async function getRequest(req, res) {
 
-  console.log(req.body.resettoken )
+  console.log(req.body.resettoken)
   const request_data = await PwdReset.findOne({ where: { request_link: req.body.resettoken } });
   console.log(request_data);
 
-  res.json({request_data})
+  res.json({ request_data })
 }
 
 async function addRequest(req, res) {
 
-  console.log(req.mobile_number);
-  console.log(req.email);
+  console.log(req.body.mobile_number);
+  console.log(req.body.email);
+
+  console.log(process.env.EMAIL_USER); 
+  console.log(process.env.EMAIL_PASS); 
+  
 
   if (req.body.mobile_number) {
     const users_data = await Users.findOne({ where: { mobile_number: req.body.mobile_number } });
@@ -57,32 +140,51 @@ async function addRequest(req, res) {
 
         })
 
+      const resetURL=`https://192.168.78.251:3000/resetpassword/updatepassword?reset_link=${randomString}`
 
-        // Create a transporter object
-        // let transporter = nodemailer.createTransport({
-        //   service: 'gmail',
-        //   auth: {
-        //     user: 'your-email@gmail.com',
-        //     pass: 'your-email-password'
-        //   }
-        // });
+        // Create a transporter
+        let transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          }
+        });
+        
+        let mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: req.body.email,
+          subject: 'Password Reset Request From Happymom.com.in',
+          text: `
+<html>          
+Hi,
 
-        // Define the email details
-        // let mailOptions = {
-        //   from: 'your-email@gmail.com',
-        //   to: 'recipient-email@gmail.com',
-        //   subject: 'Test Email',
-        //   text: 'This is a test email sent from Nodemailer in Node.js'
-        // };
+We received a request to reset the password for your happymom account. 
+If this was you, please click the link below to choose a new password:
 
-        // Send the email
-        // transporter.sendMail(mailOptions, function(err, data) {
-        //   if (err) {
-        //     console.log('Error occurred:', err);
-        //   } else {
-        //     console.log('Email sent successfully');
-        //   }
-        // });
+<a href=${resetURL}>reset my password</a>
+
+
+This password reset link will expire in 24 hours for your security. 
+If you did not request this password reset, you can safely ignore this email.
+
+If you have any questions or need help, please contact our support team at happymompms@gmail.com or +91 9400056815.
+Thanks,
+Happymom
+</html>
+
+          `
+        };
+        
+        transporter.sendMail(mailOptions, function(error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+        
+
         console.log(users_data.mobile_number);
         return res.json({ status: "email_send" })
 
@@ -194,4 +296,4 @@ function generateRandomString(length) {
 }
 
 
-module.exports = { requestData, addRequest, doReset,getRequest }
+module.exports = { requestData, addRequest, doReset, getRequest, resetMyPassword }
