@@ -115,7 +115,7 @@ async function userRegistration(req, res) {
   console.log(req.body);
 
   try {
-    console.log(req.body.mobile_number,req.body.email);
+    console.log(req.body.mobile_number);
     console.log(req.body.email);
     if (req.body.mobile_number) {
       const user_data = await Users.findOne({ where: { 
