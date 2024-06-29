@@ -308,6 +308,21 @@ async function addData(row) {
 
   } else {
     console.log("record Avilable");
+    let mobile_text = String(fixedData.Mobile_Number);
+    let mobileNumber = mobile_text.substring(2);
+    // Getting user data for the person who send the registration link
+    const user_data = await Users.findOne({ where: { mobile_number: mobileNumber } });
+    console.log(user_data);
+
+    await Users.update({
+      email: fixedData.Email_Id,
+    },
+      {
+        where: {
+          id: user_data.id  
+        }
+      });
+
   }
 }
 
