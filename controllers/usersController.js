@@ -197,6 +197,15 @@ async function userRegistration(req, res) {
                             }
                           });
       
+                          await Users.update({
+                            email: fee_data.Email_Id,
+                          },
+                            {
+                              where: {
+                                id: new_subscriber.user_data.id 
+                              }
+                            });
+                  
                         console.log("just b4 function call");
                         console.log(new_subscriber);
                         console.log(fee_data);
