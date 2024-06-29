@@ -202,7 +202,7 @@ async function userRegistration(req, res) {
                           },
                             {
                               where: {
-                                id: new_subscriber.user_data.id 
+                                id: user_data.id 
                               }
                             });
                   

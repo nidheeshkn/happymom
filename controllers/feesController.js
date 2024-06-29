@@ -293,7 +293,7 @@ async function addData(row) {
         },
           {
             where: {
-              id: new_subscriber.user_data.id 
+              id: user_data.id  
             }
           });
 
