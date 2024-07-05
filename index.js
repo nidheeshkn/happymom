@@ -143,7 +143,7 @@ app.post("/api/users/registration", usersController.userRegistration);
 
 app.post("/api/users/checkAvailability", usersController.userNameAvailability);
 
-app.post("/api/users/checkemail", usersController.emailAvailability);
+app.post("/api/users/checkemailAvailability", usersController.emailAvailability);
 
 
 

@@ -81,14 +81,15 @@ async function initialUser(first_user) {
 
 async function userNameAvailability(req, res) {
 
+  console.log("inside username availability...");
   console.log(req.body.mobile_number)
   if (req.body.mobile_number) {
     const users_data = await Users.findOne({ where: { mobile_number: req.body.mobile_number } });
     console.log(users_data);
     if (users_data) {
-      res.send({ availability: "false", message: "This mobile number already exist" });
+      return res.json({ availability: "false", message: "This mobile number already exist" });
     } else {
-      res.send({ availability: "true" })
+      return res.json({ availability: "true" })
 
     }
 
@@ -96,13 +97,15 @@ async function userNameAvailability(req, res) {
 }
 
 async function emailAvailability(req, res) {
+  console.log("inside email availability...");
+
   if (req.body.email) {
     const users_data = await Users.findOne({ where: { email: req.body.email } });
     console.log(users_data);
     if (users_data) {
-      res.send({ availability: "false", message: "This email already exist" });
+      return res.json({ availability: "false", message: "This email already exist" });
     } else {
-      res.send({ availability: "true" })
+      return res.json({ availability: "true" })
 
     }
   }
@@ -111,6 +114,8 @@ async function emailAvailability(req, res) {
 }
 
 async function userRegistration(req, res) {
+
+  console.log("inside user registration...");
 
   console.log(req.body);
 
@@ -122,9 +127,9 @@ async function userRegistration(req, res) {
         
         [Op.or]: [{  mobile_number: req.body.mobile_number }, {  email: req.body.email }],
       } });
-      console.log(user_data);
+      console.log(user_data,["-----------------***************************************line number 127  ********"]);
       if (user_data) {
-        res.send({ status: "failed", message: "This mobile number already exist" });
+        return res.status(500).json({ status: "failed", message: "This email already exist" });
       } else {
         try {
           // Getting user data for the person who send the registration link
@@ -202,7 +207,7 @@ async function userRegistration(req, res) {
                           },
                             {
                               where: {
-                                id: user_data.id 
+                                id: new_user.id 
                               }
                             });
                   
