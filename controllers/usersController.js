@@ -14,7 +14,7 @@ const { Op } = require('sequelize');
 
 
 
-async function initialUser(first_user) {
+async function initialUser(first_user) { //
 
   console.log(first_user);
   try {
