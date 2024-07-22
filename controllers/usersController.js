@@ -123,11 +123,13 @@ async function userRegistration(req, res) {
     console.log(req.body.mobile_number);
     console.log(req.body.email);
     if (req.body.mobile_number) {
-      const user_data = await Users.findOne({ where: { 
-        
-        [Op.or]: [{  mobile_number: req.body.mobile_number }, {  email: req.body.email }],
-      } });
-      console.log(user_data,["-----------------***************************************line number 127  ********"]);
+      const user_data = await Users.findOne({
+        where: {
+
+          [Op.or]: [{ mobile_number: req.body.mobile_number }, { email: req.body.email }],
+        }
+      });
+      console.log(user_data, ["-----------------***************************************line number 127  ********"]);
       if (user_data) {
         return res.status(500).json({ status: "failed", message: "This email already exist" });
       } else {
@@ -146,7 +148,7 @@ async function userRegistration(req, res) {
             console.log(parent_name);
             const randomString = generateRandomString(45); // Generate a random string of length 10
             console.log(randomString);
-      
+
             bcrypt.genSalt(saltRounds, function (err, salt) {
               bcrypt.hash(req.body.password, salt, function (err, hash) {
                 // Store hash in your password DB.
@@ -160,13 +162,13 @@ async function userRegistration(req, res) {
                       email: req.body.email,
                       // link: req.body.refference_id,
                       link: randomString,
-      
+
                     });
-      
+
                     console.log("New user's auto-generated ID:", new_user.id);
-      
+
                     let today = new Date().toLocaleDateString()
-      
+
                     console.log(today)
                     let new_subscriber = await Subscribers.create({
                       subscriber_id: new_user.id,
@@ -175,7 +177,7 @@ async function userRegistration(req, res) {
                       gross_wallet: 0,
                       wallet_balance: 0,
                       active: false,
-      
+
                     });
                     const fee_data = await FeePayments.findOne({
                       where: {
@@ -184,14 +186,14 @@ async function userRegistration(req, res) {
                       }
                     });
                     console.log(fee_data);
-      
-      
-      
-      
+
+
+
+
                     if (fee_data) {
                       if (typeof fee_data.Razorpay_TransactionId != "undefined") {
-      
-      
+
+
                         await Subscribers.update({
                           name: fee_data.Student_Name,
                           active: true,
@@ -201,53 +203,53 @@ async function userRegistration(req, res) {
                               subscriber_id: new_subscriber.subscriber_id
                             }
                           });
-      
-                          await Users.update({
-                            email: fee_data.Email_Id,
-                          },
-                            {
-                              where: {
-                                id: new_user.id 
-                              }
-                            });
-                  
+
+                        await Users.update({
+                          email: fee_data.Email_Id,
+                        },
+                          {
+                            where: {
+                              id: new_user.id
+                            }
+                          });
+
                         console.log("just b4 function call");
                         console.log(new_subscriber);
                         console.log(fee_data);
                         feesController.distributeBonus(new_subscriber, fee_data);
-      
+
                       }
                     }
-      
-      
-      
-      
+
+
+
+
                     return res.json({ data: new_subscriber });
-      
+
                   })();
                 }
-      
+
               });
             });
-      
-      
-      
-          }
-      
-        }
-      
-        catch (e) {
-      
-      
-          console.log(e); return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
-      
-        }
-  
-      }
-  
-    }else{
 
-     
+
+
+          }
+
+        }
+
+        catch (e) {
+
+
+          console.log(e); return res.status(401).json({ status: "failed", message: "mobile number or password is incorrect" });
+
+        }
+
+      }
+
+    } else {
+
+
       console.log(e); return res.status(401).json({ status: "failed", message: "mobile number is incorrect" });
 
     }
@@ -302,6 +304,48 @@ async function userRegister(req, res) {
 }
 
 
+async function updateEmail(req, res) {
+
+  console.log('inside email updation...')
+  console.log(req.user)
+  console.log(req.body);
+
+  // const users_data = await Users.findAll();
+  const user_data = await Users.findOne({ where: { id: req.user.userId } });
+  console.log(user_data, "New api for email updation");
+
+
+  if (userData.mobile_number = req.body.mobile_number) {
+
+    try {
+
+      await Users.update({
+        email: req.body.email,
+      },
+        {
+          where: {
+            id: user_data.id
+          }
+        });
+
+        return res.status(200).json({ status: "Success", message: "Your email is updated..." });
+
+    } catch (e) {
+
+
+      console.log(e); 
+      return res.status(401).json({ status: "failed", message: "Couldn't update email" });
+
+    }
+
+  }else{
+    return res.status(401).json({ status: "failed", message: "Mobile number mismatch..." });
+  }
+
+
+}
+
+
 
 
 
@@ -322,4 +366,4 @@ function generateRandomString(length) {
 
 
 
-module.exports = { usersData, userData, userRegister, userRegistration, userNameAvailability,emailAvailability, initialUser }
+module.exports = { usersData, userData, userRegister, userRegistration, userNameAvailability, emailAvailability, initialUser, updateEmail }

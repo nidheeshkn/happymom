@@ -120,7 +120,6 @@ app.post("/api/user/login", async function (req, res) {
 
 
 
-// app.use(auth)
 
 app.get("/api/user/home", async function (req, res) {
   console.log(req.session.session_id)
@@ -132,9 +131,8 @@ app.get("/api/user/home", async function (req, res) {
 
 
 
-//     Call to usersController      begins here ....................++++++++++++++++++++++++++++++++++
+//     Call to usersController  without Authentication begins here ....................++++++++++++++++++++++++++++++++++
 
-app.get("/api/users",  usersController.usersData);
 
 
 app.get("/api/users/reference", usersController.userRegister);
@@ -147,21 +145,34 @@ app.post("/api/users/checkemailAvailability", usersController.emailAvailability)
 
 
 
-app.post("/api/users/resetmypassword",authenticate, passwordResetController.resetMyPassword);
+//     Call to passwordResetController  without Authentication begins here ....................++++++++++++++++++++++++++++++++++
+
 
 app.post("/api/users/passwordresetrequest", passwordResetController.addRequest);
 
 app.post("/api/users/readrequest", passwordResetController.getRequest);
 
-
 app.post("/api/users/passwordreset", passwordResetController.doReset);
+
+
+// app.use(auth)
+
+//     Call to usersController  without Authentication begins here ....................++++++++++++++++++++++++++++++++++
+
+app.get("/api/user", authenticate, usersController.userData);
+
+app.get("/api/users",authenticate,  usersController.usersData);
+
+app.post("/api/user/updatemyemail",authenticate,  usersController.updateEmail);
 
 
 
 //     Call to usersController      ends here ....................++++++++++++++++++++++++++++++++++
 
-app.get("/api/user", authenticate, usersController.userData);
 
+// This is for resetting password after user login
+
+app.post("/api/users/resetmypassword",authenticate, passwordResetController.resetMyPassword);
 
 
 //     Call to positionsController      begins here ....................++++++++++++++++++++++++++++++++++
