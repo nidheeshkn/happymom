@@ -173,6 +173,7 @@ async function userRegistration(req, res) {
                     let new_subscriber = await Subscribers.create({
                       subscriber_id: new_user.id,
                       parent_id: parent_id,
+                      name:req.body.name,
                       doj: today,
                       gross_wallet: 0,
                       wallet_balance: 0,
