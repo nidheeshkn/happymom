@@ -5,14 +5,15 @@ import Ham from "../../(components)/Ham";
 import BottomNavbar from "../../(components)/BottomNavbar";
 import { RiAddLine, RiCloseLine, RiEdit2Line, RiLoopRightLine, RiPlayListAddLine } from "@remixicon/react";
 
-function Positions() {
-  const controller = "positions";
+function WithdrawalTypes() {
+  const controller = "withdrawalRequestStatuses";
   const [tableData, setTableData] = useState([]);
   const [formData, setFormData] = useState({
-    position_id: "",
-    position_name: "",
-    position_rank: "",
-    gross_wallet: "",
+    id: "",
+    title: "",
+    description: "",
+    added_by: "",
+    active: "",
   });
 
   const [isEditing, setIsEditing] = useState(false); // State to track editing mode
@@ -76,10 +77,11 @@ function Positions() {
 
       // Clear form and refetch data
       setFormData({
-        position_id: "",
-        position_name: "",
-        position_rank: "",
-        gross_wallet: "",
+        id: "",
+        title: "",
+        description: "",
+        added_by: "",
+        active: "",
       });
       setIsEditing(false); // Reset editing state
       setDisplayForm(false);
@@ -91,10 +93,11 @@ function Positions() {
 
   const resetFromData = async () => {
     setFormData({
-      position_id: "",
-    position_name: "",
-    position_rank: "",
-    gross_wallet: "",
+      id: "",
+      title: "",
+      description: "",
+      added_by: "",
+      active: "",
     });
   }
 
@@ -108,9 +111,9 @@ function Positions() {
                   <table className="table table-pin-rows table-pin-cols text-center text-xs w-96">
                     <thead>
                       <tr className=" text-lg">
-                        <th className="p-2">Name</th>
-                        <th className="p-2" >Rank</th>
-                        <th className="p-2">Gross Wallet</th>
+                        <th className="p-2">title</th>
+                        <th className="p-2" >description</th>
+                        <th className="p-2">active</th>
                         <th className="p-2">
                           {displayForm===true?
                           <span
@@ -144,30 +147,30 @@ function Positions() {
                           <td>
                             <input
                               type="text"
-                              name="position_name"
-                              value={formData.position_name}
+                              name="title"
+                              value={formData.title}
                               onChange={handleInputChange}
-                              placeholder="Name"
+                              placeholder="title"
                               className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
                             />
                           </td>
                           <td>
                             <input
                               type="text"
-                              name="position_rank"
-                              value={formData.position_rank}
+                              name="description"
+                              value={formData.description}
                               onChange={handleInputChange}
-                              placeholder="Rank"
+                              placeholder="description"
                               className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
                             />
                           </td>
                           <td>
                             <input
                               type="text"
-                              name="gross_wallet"
-                              value={formData.gross_wallet}
+                              name="active"
+                              value={formData.active}
                               onChange={handleInputChange}
-                              placeholder="amount"
+                              placeholder="active"
                               className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
                             />
                           </td>
@@ -184,10 +187,10 @@ function Positions() {
                         <tr></tr>
                       )}
                       {tableData.map((row) => (
-                        <tr key={row.position_id}>
-                          <td>{row.position_name}</td>
-                          <td>{row.position_rank}</td>
-                          <td>{row.gross_wallet}</td>
+                        <tr key={row.id}>
+                          <td>{row.title}</td>
+                          <td>{row.description}</td>
+                          <td>{row.active}</td>
                           <td>
                             <span
                               onClick={() => handleEdit(row)}
@@ -201,9 +204,9 @@ function Positions() {
                     </tbody>
                     <tfoot>
                       <tr>
-                      <th className="p-2">Name</th>
-                        <th className="p-2" >Rank</th>
-                        <th className="p-2">Gross Wallet</th>
+                        <th>title</th>
+                        <th className=" pl-4 pr-4 ">description</th>
+                        <th>active</th>
                         <th>&nbsp;</th>
                       </tr>
                     </tfoot>
@@ -220,4 +223,4 @@ function Positions() {
   );
 }
 
-export default Positions;
+export default WithdrawalTypes;

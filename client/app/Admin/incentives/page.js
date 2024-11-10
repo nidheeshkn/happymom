@@ -3,6 +3,13 @@ import React, { useEffect, useState } from "react";
 import axios from "@/app/instance";
 import Ham from "../../(components)/Ham";
 import BottomNavbar from "../../(components)/BottomNavbar";
+import {
+  RiAddLine,
+  RiCloseLine,
+  RiEdit2Line,
+  RiLoopRightLine,
+  RiPlayListAddLine,
+} from "@remixicon/react";
 
 function Incentive() {
   const controller = "incentives";
@@ -12,7 +19,9 @@ function Incentive() {
     name: "",
     description: "",
   });
+
   const [isEditing, setIsEditing] = useState(false); // State to track editing mode
+  const [displayForm, setDisplayForm] = useState(false); // State to track editing mode
 
   useEffect(() => {
     fetchData();
@@ -42,6 +51,7 @@ function Incentive() {
   const handleEdit = (row) => {
     setFormData({ ...row }); // Set form data to the copied row
     setIsEditing(true); // Switch to editing mode
+    setDisplayForm(true);
   };
 
   const handleSubmit = async (e) => {
@@ -76,10 +86,19 @@ function Incentive() {
         description: "",
       });
       setIsEditing(false); // Reset editing state
+      setDisplayForm(false);
       fetchData();
     } catch (error) {
       console.error("Error adding/updating incentive:", error);
     }
+  };
+
+  const resetFromData = async () => {
+    setFormData({
+      id: "",
+      name: "",
+      description: "",
+    });
   };
 
   return (
@@ -88,78 +107,99 @@ function Incentive() {
         <Ham />
         <div className="flex flex-col overflow-y-scroll text-3xl">
           <div className="overflow-x-hidden max-h-[95vh]">
-            <div className="inline-block min-w-full py-2">
-              <div className="overflow-x-auto">
-                <form onSubmit={handleSubmit}>
-                  <table className="table table-md table-pin-rows table-pin-cols text-center text-xs">
-                    <thead>
-                      <tr>
-                        <th>SL</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td></td>
-                        <td>
-                          <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            placeholder="Incentives Name"
-                            className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            placeholder="Incentives Description"
-                            className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
-                          />
-                        </td>
-                        <td>
-                          <button
-                            type="submit"
-                            className="btn btn-outline btn-accent"
-                          >
-                            {isEditing ? "Update" : "Add"}
-                          </button>
-                        </td>
-                      </tr>
-                      {tableData.map((row, index) => (
-                        <tr key={row.id}>
-                          <td>{index + 1}</td> {/* Displaying index as SL */}
-                          <td>{row.name}</td>
-                          <td>{row.description}</td>
-                          <td>
-                            <button
-                              onClick={() => handleEdit(row)}
-                              className="btn btn-outline btn-accent"
-                            >
-                              Edit
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <th>SL</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th></th>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </form>
-              </div>
-            </div>
+            <form onSubmit={handleSubmit}>
+              <table className="table table-pin-rows table-pin-cols text-center text-xs w-96">
+                <thead>
+                  <tr className=" text-lg">
+                    <th className="p-2">Name</th>
+                    <th className="p-2">Description</th>
+                    <th className="p-2">
+                      {displayForm === true ? (
+                        <span
+                          onClick={() => {
+                            setDisplayForm(false);
+                            resetFromData();
+                            setIsEditing(false);
+                          }}
+                          className="btn btn-outline btn-accent "
+                        >
+                          <RiCloseLine />
+                        </span>
+                      ) : (
+                        <span
+                          onClick={() => {
+                            setDisplayForm(true);
+                            resetFromData();
+                            setIsEditing(false);
+                          }}
+                          className="btn btn-outline btn-accent "
+                        >
+                          <RiPlayListAddLine />
+                        </span>
+                      )}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayForm ? (
+                    <tr>
+                      <td>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder="name"
+                          className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          name="description"
+                          value={formData.description}
+                          onChange={handleInputChange}
+                          placeholder="description"
+                          className="input input-bordered input-accent w-full max-w-xs p-1 text-center"
+                        />
+                      </td>
+                     
+                      <td>
+                        <button
+                          type="submit"
+                          className="btn btn-outline btn-accent"
+                        >
+                          {isEditing ? <RiLoopRightLine /> : <RiAddLine />}
+                        </button>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr></tr>
+                  )}
+                  {tableData.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.name}</td>
+                      <td>{row.description}</td>
+                      <td>
+                        <span
+                          onClick={() => handleEdit(row)}
+                          className="btn btn-outline btn-accent"
+                        >
+                          <RiEdit2Line />
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Name</th>
+                    <th >Description</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </form>
           </div>
         </div>
 
