@@ -5,7 +5,7 @@ import Ham from "../../(components)/Ham";
 import BottomNavbar from "../../(components)/BottomNavbar";
 import { RiAddLine, RiCloseLine, RiEdit2Line, RiLoopRightLine, RiPlayListAddLine } from "@remixicon/react";
 
-function WithdrawalTypes() {
+function WithdrawalStatuses() {
   const controller = "withdrawalRequestStatuses";
   const [tableData, setTableData] = useState([]);
   const [formData, setFormData] = useState({
@@ -105,7 +105,9 @@ function WithdrawalTypes() {
     <>
       <div className="w-full min-h-screen overflow-y-scroll">
         <Ham />
-        <div className="flex flex-col overflow-y-scroll text-3xl">
+        <div className="flex flex-col overflow-y-scroll text-xl">
+        <div className=" flex w-full justify-center "><h5 className=" flex-col"> Withdrawal Statuses</h5></div>
+
           <div className="overflow-x-hidden max-h-[95vh]">
                 <form onSubmit={handleSubmit}>
                   <table className="table table-pin-rows table-pin-cols text-center text-xs w-96">
@@ -223,4 +225,4 @@ function WithdrawalTypes() {
   );
 }
 
-export default WithdrawalTypes;
+export default WithdrawalStatuses;

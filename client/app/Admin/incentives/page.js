@@ -105,7 +105,8 @@ function Incentive() {
     <>
       <div className="w-full min-h-screen overflow-y-scroll">
         <Ham />
-        <div className="flex flex-col overflow-y-scroll text-3xl">
+        <div className="flex flex-col overflow-y-scroll text-xl">
+        <div className=" flex w-full justify-center "><h5 className=" flex-col"> Incentives Types</h5></div>
           <div className="overflow-x-hidden max-h-[95vh]">
             <form onSubmit={handleSubmit}>
               <table className="table table-pin-rows table-pin-cols text-center text-xs w-96">

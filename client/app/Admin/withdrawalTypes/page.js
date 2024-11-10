@@ -105,7 +105,9 @@ function WithdrawalTypes() {
     <>
       <div className="w-full min-h-screen overflow-y-scroll">
         <Ham />
-        <div className="flex flex-col overflow-y-scroll text-3xl">
+        <div className="flex flex-col overflow-y-scroll text-xl">
+        <div className=" flex w-full justify-center "><h5 className=" flex-col"> Withdrawal Types</h5></div>
+
           <div className="overflow-x-hidden max-h-[95vh]">
             <div className="inline-block min-w-full py-2">
                 <form onSubmit={handleSubmit}>
