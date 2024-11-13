@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "@/app/instance";
-import { RiHome4Line } from "@remixicon/react";
+import { RiHome4Line, RiSearch2Line } from "@remixicon/react";
 import person from "@/public/person.png";
 
 
@@ -67,7 +67,7 @@ function Ham() {
         </button>
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn m-1">
-            Click
+            <RiSearch2Line/>
           </div>
           <div
             tabIndex={0}
