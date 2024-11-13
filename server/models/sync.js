@@ -33,7 +33,7 @@ const WR_statuses=require('./withdrawalRequestStatuses');
 // User.sync({alter:true});
 
 // Subscribers.sync({});
-// Subscribers.sync({alter:true});
+Subscribers.sync({alter:true});
 
 // FeePayments.sync();
 // FeePayments.sync({alter:true});

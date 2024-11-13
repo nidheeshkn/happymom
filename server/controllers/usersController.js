@@ -272,7 +272,7 @@ async function userRegistration(req, res) {
 
 async function usersData(req, res) {
 
-  console.log(req.session.session_id)
+  console.log(req.session.session_id);
   const users_data = await Users.findAll();
   // const result = await User.findOne({ where: { mobile_number: req.body.mobile_number } });
   console.log(users_data);
@@ -369,4 +369,4 @@ function generateRandomString(length) {
 
 
 
-module.exports = { usersData, userData, userRegister, userRegistration, userNameAvailability, emailAvailability, initialUser, updateEmail }
+module.exports = { usersData, userData, userRegister, userRegistration, userNameAvailability, emailAvailability, initialUser, updateEmail };
