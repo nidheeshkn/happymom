@@ -1,6 +1,56 @@
 const Subscribers = require("../models/subscriber");
 const Users = require("../models/user");
 const url = require('url');
+const { Op } = require('sequelize');
+
+
+
+async function searchSubscriber(req, res) {
+
+  console.log(req.body);
+  const searchQuery=req.body.params.searchQuery;
+
+  // const subscribersData = await Users.findAll({
+  //   attributes: ['id', 'mobile_number'],
+  //   where: {
+  //     [Op.or]: [
+  //       { mobile_number: { [Op.like]: `${searchQuery}%` } },
+  //       {
+  //         include: {
+  //           model: Subscribers,
+  //           where: {
+  //             name: { [Op.like]: `${searchQuery}%` }
+  //           }
+  //         }
+  //       }
+  //     ]
+  //   },
+  //   include: [{
+  //     model: Subscribers,
+  //     attributes: ['name']
+  //   }]
+  // });
+
+  const subscribersData= await Users.findAll({
+    attributes: ['id', 'mobile_number'],
+    where: {
+      [Op.or]: [
+        { mobile_number: { [Op.like]: `${searchQuery}%` } },
+        // { isActive: true }
+      ]
+    },
+    include: [{
+      model: Subscribers, // will create a left join
+      attributes: ['name'],
+    }]
+  });
+
+
+
+  console.log(subscribersData);
+  res.send(subscribersData);
+}
+
 
 
 async function addIncentive2Subscriber(user_id,amount) {
@@ -143,6 +193,7 @@ async function myProfile(req, res) {
 
 module.exports = {
   subscribersData,
+  searchSubscriber,
   subscribersHome,
   viewSubscribersHome,
   viewSubscriber,

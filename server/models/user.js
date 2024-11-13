@@ -1,5 +1,7 @@
 const {  DataTypes } = require('sequelize');
 const db=require("./db");
+const Subscribers = require("../models/subscriber");
+
 
 const User = db.define('users', {
     id:{
@@ -29,5 +31,7 @@ const User = db.define('users', {
         allowNull:false,
     }
 });
+
+User.hasOne(Subscribers, { foreignKey: 'subscriber_id' });
 
 module.exports=User;

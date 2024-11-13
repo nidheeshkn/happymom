@@ -181,15 +181,10 @@ app.post("/api/user/updatemyemail",authenticate,  usersController.updateEmail);
 
 
 
-
-
-
-
-
-
-
 app.get("/api/fees", feesController.feesData);
 
+
+// Call to subscribersController      begins here ....................++++++++++++++++++++++++++++++++++
 
 
 app.get("/api/subscriber/home", authenticate, subscribersController.subscribersHome);
@@ -202,6 +197,7 @@ app.get("/api/subscriber/view", authenticate, subscribersController.viewSubscrib
 app.get("/api/subscriber/profile", authenticate, subscribersController.myProfile);
 
 app.post("/api/subscriber/update_me", authenticate, subscribersController.updateMe);
+app.post("/api/subscriber/searchSubscriber", subscribersController.searchSubscriber);
 
 
 
