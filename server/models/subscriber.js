@@ -7,10 +7,7 @@ const Subscribers = db.define('subscribers', {
         primaryKey:true,
        
     },
-    userId:{
-        type:DataTypes.INTEGER,
 
-    },
     sur_name:{
         type:DataTypes.STRING(5),
        
