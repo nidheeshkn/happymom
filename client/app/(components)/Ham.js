@@ -34,7 +34,7 @@ function Ham() {
   const handleSubmit = async () => {
     // e.preventDefault();
     // Perform search logic here, e.g., fetch data from an API
-    console.log("Search query:", query);
+    // console.log("Search query:", query);
 
     try {
       const response = await axios.post(
@@ -42,7 +42,7 @@ function Ham() {
         {params:{searchQuery:query}}
       );
       const results = response.data;
-      console.log(results);
+      // console.log(results);
       setSubscribers(results);
     } catch (error) {
       console.error("Error fetching subscriber data:", error);
@@ -58,7 +58,7 @@ function Ham() {
         </div>
 
         <button
-          className="px-5 py-1  rounded-md  "
+          className=""
           onClick={() => {
             router.push("/subscriber/home");
           }}
@@ -66,7 +66,7 @@ function Ham() {
           <RiHome4Line />
         </button>
         <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn m-1">
+          <div tabIndex={0} role="button" className="">
             <RiSearch2Line/>
           </div>
           <div
