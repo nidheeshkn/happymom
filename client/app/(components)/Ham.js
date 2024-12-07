@@ -5,7 +5,6 @@ import axios from "@/app/instance";
 import { RiHome4Line, RiSearch2Line } from "@remixicon/react";
 import person from "@/public/person.png";
 
-
 // import SearchBar from "./SearchBar";
 
 function Ham() {
@@ -34,21 +33,19 @@ function Ham() {
   const handleSubmit = async () => {
     // e.preventDefault();
     // Perform search logic here, e.g., fetch data from an API
-    console.log("Search query:", query);
+    // console.log("Search query:", query);
 
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/subscriber/searchSubscriber`,
-        {params:{searchQuery:query}}
+        { params: { searchQuery: query } }
       );
       const results = response.data;
-      console.log(results);
+      // console.log(results);
       setSubscribers(results);
     } catch (error) {
       console.error("Error fetching subscriber data:", error);
     }
-
-
   };
   return (
     <div className="  ">
@@ -58,7 +55,7 @@ function Ham() {
         </div>
 
         <button
-          className="px-5 py-1  rounded-md  "
+          className=""
           onClick={() => {
             router.push("/subscriber/home");
           }}
@@ -66,8 +63,8 @@ function Ham() {
           <RiHome4Line />
         </button>
         <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn m-1">
-            <RiSearch2Line/>
+          <div tabIndex={0} role="button" className="">
+            <RiSearch2Line />
           </div>
           <div
             tabIndex={0}
@@ -87,47 +84,51 @@ function Ham() {
                 />
               </div>
               <div className="flex justify-center">
-              {subscribers.length > 0 && (
-                <div className="overflow-x-auto">
-                  <table className="table">
-                    {/* head */}
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>mobile</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {subscribers.map((user) => (
-                        <tr key={user.id}>
-                          <td>
-                            <div className="flex items-center gap-3">
+                {subscribers.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="table">
+                      {/* head */}
+                      <thead>
+                        <tr>
+                          <th>User</th>
+                          <th>Name/ mobile</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {subscribers.map((user) => (
+                          <tr key={user.id}>
+                            <td>
                               <div className="avatar">
                                 <div className="mask mask-squircle h-10 w-10">
-                                  <Image src={person} alt={`${user.id}'s avatar`} />
+                                  <Image
+                                    src={person}
+                                    alt={`${user.id}'s avatar`}
+                                  />
                                 </div>
                               </div>
-                              <div>
-                                <div 
-                                className="font-bold"
-                                onClick={() => {
-                                  router.push(
-                                    `/subscriber/viewsubscriber/${user.id}`
-                                  );
-                                }}
-                                >{user.subscriber?.name?user.subscriber.name:null}</div>
+                            </td>
+                            <td>
+                              <div className="flex flex-col items-center gap-3">
+                                <div
+                                  className="font-bold"
+                                  onClick={() =>
+                                    router.push(
+                                      `/subscriber/viewsubscriber/${user.id}`
+                                    )
+                                  }
+                                >
+                                  {user.subscriber?.name ?? null}
+                                </div>
+                                <div>{user.mobile_number}</div>
                               </div>
-                            </div>
-                          </td>
-                          <td>{user.mobile_number}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    {/* foot */}
-                    
-                  </table>
-                </div>
-              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      {/* foot */}
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
           </div>
